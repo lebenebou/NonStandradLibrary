@@ -188,8 +188,6 @@ public:
 
     size_t height() const {
 
-        // return height(root); // use of private recursive method
-
         if(is_empty()) return 0;
         
         priority_queue<int> heights;
