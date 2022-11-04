@@ -339,7 +339,7 @@ int main(int argc, char* argv[]){
     cout << "Upside down display:\t";
     tree.horizontal_display(upside_down = true);
 
-    cout << endl;
+    cout << endl << "Levels (depth):" << endl;
 
     for(const auto& duo : tree.levels()){ // this is a map
 
