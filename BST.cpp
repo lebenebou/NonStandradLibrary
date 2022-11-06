@@ -188,6 +188,7 @@ public:
 
     size_t height() const {
         return height(root);
+        // also possible using traversal
     }
 
     Type max_value() const {
