@@ -346,9 +346,5 @@ int main(int argc, char* argv[]){
         cout << duo.first << " at level " << duo.second << endl;
     }
 
-    BST<int> t2;
-
-    (t2 = tree).display();
-
     return 0;
 }
