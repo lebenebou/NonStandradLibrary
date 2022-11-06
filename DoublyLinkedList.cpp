@@ -26,7 +26,7 @@ private:
 
     Node* node_at_index(size_t index) const {
 
-        if(index<0 || index>=size) return nullptr;
+        if(index>=size) return nullptr;
         Node* jumper = nullptr;
 
         if(index < size/2){
@@ -34,7 +34,7 @@ private:
             jumper = head;
             while(--index + 1) jumper = jumper->next;
         }
-        else{ // index >= size/2
+        else { // index >= size/2
 
             index = size - index;
             jumper = tail;
@@ -91,7 +91,7 @@ public:
 
     bool insert(const Type& new_value, const size_t& index){
 
-        if(index<0 || index>size) return false;
+        if(index>size) return false;
         if(index==0) return push_front(new_value);
         if(index==size) return push_back(new_value);
 
@@ -126,7 +126,7 @@ public:
 
     bool remove(const size_t& index){
 
-        if(index<0 || index>=size) return false;
+        if(index>=size) return false;
         if(index==0) return pop_front();
         if(index==size-1) return pop_back();
 
@@ -147,6 +147,8 @@ public:
     }
 
     bool contains(const Type& elt) const {
+
+        if(is_empty()) return false;
 
         for(Node *j1 = head, *j2 = tail; j1!=j2; j1 = j1->next, j2 = j2->previous){
 
@@ -210,7 +212,7 @@ int main(int argc, char* argv[]){
 
     DLL<int> my_list({1, 2, 3, 4, 5, 6, 7, 8});
 
-    cout << my_list[1] << endl;
+    cout << my_list << endl;
 
     return 0;
 }
