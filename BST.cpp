@@ -163,7 +163,7 @@ public:
         bfs(other.root, [this](Node*& n)->void { this->insert(n->value); });
     }
 
-    BST& operator=(BST<Type> other) const {
+    BST& operator=(BST<Type> other){
 
         swap(other, *this);
         return *this;
@@ -345,6 +345,10 @@ int main(int argc, char* argv[]){
 
         cout << duo.first << " at level " << duo.second << endl;
     }
+
+    BST<int> t2;
+
+    (t2 = tree).display();
 
     return 0;
 }
