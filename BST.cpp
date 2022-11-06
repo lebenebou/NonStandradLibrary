@@ -346,7 +346,5 @@ int main(int argc, char* argv[]){
         cout << duo.first << " at level " << duo.second << endl;
     }
 
-    auto t2 = tree;
-
     return 0;
 }
