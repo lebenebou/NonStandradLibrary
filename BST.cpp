@@ -188,11 +188,7 @@ public:
 
     size_t height() const {
 
-        if(is_empty()) return 0;
-        
-        priority_queue<int> heights;
-        pre_order(root, [&heights](Node*&, const int& depth, const int&)->void { heights.push(depth); });
-        return heights.top()+1;
+        return height(root);
     }
 
     Type max_value() const {
