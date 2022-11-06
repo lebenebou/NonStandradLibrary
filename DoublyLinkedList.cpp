@@ -43,6 +43,29 @@ private:
         return jumper;
     }
 
+    void sort_swap(Node* start){
+
+        if (!start || !start->next) return;
+        if(start->value > start->next->value) std::swap(start->value, start->next->value);
+    }
+
+    Node* node_between(Node* start, Node* end) const {
+
+        while(true){
+
+            if(start == end) return start;
+            if(start->next == end) return start;
+
+            start = start->next;
+            end = end->previous;
+        }
+    }
+
+    void merge(Node* start, Node* mid, Node* end){
+
+        
+    }
+
     template<typename T>
     friend void swap(DLL<T>& l1, DLL<T>& l2);
 
@@ -157,6 +180,10 @@ public:
         return false;
     }
 
+    void sort(){
+        cout << node_between(head, tail)->value << endl;
+    }
+
     Type& operator[](const size_t& index){
 
         Node* wanted = node_at_index(index);
@@ -179,7 +206,7 @@ public:
         return size;
     }
 
-    void debug_info() const {
+    void view_debug_info() const {
 
         cout << "DLinked List:\n\t-Elements: [ ";
         for(Node* jumper = head; jumper; jumper = jumper->next) cout << jumper->value << " ";
@@ -210,8 +237,9 @@ ostream& operator<<(ostream& output, const DLL<Type> l){
 
 int main(int argc, char* argv[]){
 
-    DLL<int> my_list({1, 2, 3, 4, 5, 6, 7, 8});
+    DLL<int> my_list({3, 6, 2, 5, 1, 7});
 
+    my_list.sort();
     cout << my_list << endl;
 
     return 0;
