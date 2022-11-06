@@ -16,11 +16,14 @@ private:
 
     struct Node {
 
-        Node(const Type& v, Node* l = nullptr, Node* r = nullptr) : value(v), left(l), right(r){}
+        Node(const Type& v, size_t d = 0, int o = 0 ,Node* l = nullptr, Node* r = nullptr) : value(v), depth(d), offset(o) ,left(l), right(r){}
 
         Type value;
         Node* left;
         Node* right;
+
+        size_t depth;
+        int offset;
     };
 
     Node* root;
@@ -29,18 +32,18 @@ private:
     template<typename T>
     friend void swap(BST<T>& t1, BST<T>& t2);
 
-    bool insert(const Type& elt, Node* start){
+    bool insert(const Type& elt, Node* start, size_t depth = 1, int offset = 0){
 
         if(!start){
-            root = new Node(elt);
+            root = new Node(elt, 0, 0);
             return size=1;
         }
 
         if(elt > start->value){
 
-            if(start->right) return insert(elt, start->right);
+            if(start->right) return insert(elt, start->right, depth+1, offset+1);
             else {
-                start->right = new Node(elt);
+                start->right = new Node(elt, depth, offset);
                 ++size;
                 return true;
             }
@@ -48,9 +51,9 @@ private:
 
         else if(elt < start->value) {
 
-            if(start->left) return insert(elt, start->left);
+            if(start->left) return insert(elt, start->left, depth+1, offset-1);
             else {
-                start->left = new Node(elt);
+                start->left = new Node(elt, depth, offset);
                 ++size;
                 return true;
             }
@@ -90,31 +93,31 @@ private:
         return start;
     }
 
-    void in_order(Node* start, function<void(Node*&, const int&, const int&)> treat, const int& depth = 0, const int& offset = 0) const {
+    void in_order(Node* start, function<void(Node*&)> treat) const {
 
         if(!start) return;
 
-        in_order(start->left, treat, depth+1, offset-1);
-        treat(start, depth, offset);
-        in_order(start->right, treat, depth+1, offset+1);
+        in_order(start->left, treat);
+        treat(start);
+        in_order(start->right, treat);
     }
 
-    void pre_order(Node* start, function<void(Node*&, const int&, const int&)> treat, const int& depth = 0, const int& offset = 0) const {
+    void pre_order(Node* start, function<void(Node*&)> treat) const {
 
         if(!start) return;
 
-        treat(start, depth, offset);
-        pre_order(start->left, treat, depth+1, offset-1);
-        pre_order(start->right, treat, depth+1, offset+1);
+        treat(start);
+        pre_order(start->left, treat);
+        pre_order(start->right, treat);
     }
 
-    void post_order(Node* start, function<void(Node*&, const int&, const int&)> treat, const int& depth = 0, const int& offset = 0) const {
+    void post_order(Node* start, function<void(Node*&)> treat) const {
 
         if(!start) return;
 
-        post_order(start->left, treat, depth+1, offset-1);
-        post_order(start->right, treat, depth+1, offset+1);
-        treat(start, depth, offset);
+        post_order(start->left, treat);
+        post_order(start->right, treat);
+        treat(start);
     }
 
     void bfs(Node* start, function<void(Node*&)> treat) const {
@@ -140,9 +143,9 @@ private:
         const short sign = (upside_down ? 1:-1); // this inverts the priority in the queue (priority is for larger values by default)
 
         priority_queue<pair<int, Type>> q;
-        pre_order(root, [&q, sign, depth_based, upside_down](Node*& n, const int& depth, const int& offset) -> void
+        pre_order(root, [&q, sign, depth_based, upside_down](Node*& n) -> void
 
-        { q.push({sign * (depth_based ? depth:offset), sign * n->value }); });
+        { q.push({sign * (depth_based ? n->depth:n->offset), sign * n->value }); });
 
         return q;
     }
@@ -214,8 +217,7 @@ public:
 
     void display(const short& type = 1) const {
 
-        function<void(Node*& n, const int&, const int&)> print =
-        [](Node*& n, const int&, const int&){ cout << n->value << " "; };
+        function<void(Node*& n)> print = [](Node*& n){ cout << n->value << " "; };
         
         cout << "[ ";
         switch(type){
@@ -230,7 +232,7 @@ public:
                 post_order(root, print);
                 break;
             default:
-                bfs(root, [](Node*& n)->void { cout << n->value << " ";} );
+                bfs(root, print);
                 break;
         }
         cout << "]" << endl;
@@ -264,15 +266,22 @@ public:
         cout << "]" << endl;
     }
 
-    map<Type, int> levels() const {
+    map<Type, size_t> levels() const {
+
+        map<Type, size_t> answer;
+        if(size<2) return answer;
+
+        pre_order(root, [&answer](Node* n) -> void { answer[n->value] = n->depth; });
+
+        return answer;
+    }
+
+    map<Type, int> offsets() const {
 
         map<Type, int> answer;
         if(size<2) return answer;
 
-        pre_order(root, [&answer](Node*& n, const int& depth, const int&) -> void {
-
-            answer[n->value] = depth;
-        });
+        pre_order(root, [&answer](Node* n) -> void { answer[n->value] = n->offset; });
 
         return answer;
     }
@@ -284,7 +293,7 @@ public:
     size_t count_nodes() const {
 
         size_t answer = 0;
-        pre_order(root, [&answer](Node*& n)->void { ++answer; });
+        bfs(root, [&answer](Node*& n)->void { ++answer; });
         return answer;
     }
 
@@ -293,7 +302,7 @@ public:
     }
 
     ~BST(){
-        post_order(root, [](Node*& n, const int&, const int&)-> void { delete n; });
+        post_order(root, [](Node*& n)-> void { delete n; });
     }
 };
 
@@ -339,6 +348,13 @@ int main(int argc, char* argv[]){
     for(const auto& duo : tree.levels()){ // this is a map
 
         cout << duo.first << " at level " << duo.second << endl;
+    }
+
+    cout << endl << "Offsets:" << endl;
+
+    for(const auto& duo : tree.offsets()){ // this is a map
+
+        cout << duo.first << " at offset " << duo.second << endl;
     }
 
     return 0;
