@@ -63,7 +63,53 @@ private:
 
     void merge(Node* start, Node* mid, Node* end){
 
-        
+        if(start == mid) return sort_swap(start);
+
+        vector<Type> result;
+
+        Node* i = start;
+        Node* j = mid->next;
+
+        while(i != mid->next || j!=end->next){
+
+            if(i!=mid->next && j!=end->next){ // both are valid
+
+                if(i->value < j->value){
+                    result.push_back(i->value);
+                    i = i->next;
+                }
+                else {
+                    result.push_back(j->value);
+                    j = j->next;
+                }
+            }
+
+            else if(i!=mid->next && j==end->next){ // only i is valid
+
+                result.push_back(i->value);
+                i = i->next;
+            }
+            else{
+
+                result.push_back(j->value);
+                j = j->next;
+            }
+        }
+
+        for(const Type& elt : result){
+            start->value = elt;
+            start = start->next;
+        }
+    }
+
+    void merge_sort(Node* start, Node* end){
+
+        Node* mid = node_between(start, end);
+        if(start == mid) return sort_swap(start);
+
+        merge_sort(start, mid);
+        merge_sort(mid->next, end);
+        merge(start, mid, end);
     }
 
     template<typename T>
@@ -180,8 +226,28 @@ public:
         return false;
     }
 
+    bool is_sorted() const {
+
+        if(size<2) return true;
+
+        Node* start = head;
+        Node* end = tail;
+
+        while(start!=end && start!=end->previous){
+
+            if(start->value > start->next->value) return false;
+            if(end->value < end->previous->value) return false;
+
+            start = start->next;
+            end = end->previous;
+        }
+        return true;
+    }
+
     void sort(){
-        cout << node_between(head, tail)->value << endl;
+
+        if(size<2) return;
+        merge_sort(head, tail);
     }
 
     Type& operator[](const size_t& index){
@@ -237,10 +303,7 @@ ostream& operator<<(ostream& output, const DLL<Type> l){
 
 int main(int argc, char* argv[]){
 
-    DLL<int> my_list({3, 6, 2, 5, 1, 7});
-
-    my_list.sort();
-    cout << my_list << endl;
+    DLL<int> my_list;
 
     return 0;
 }
