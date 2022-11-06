@@ -187,7 +187,6 @@ public:
     }
 
     size_t height() const {
-
         return height(root);
     }
 
