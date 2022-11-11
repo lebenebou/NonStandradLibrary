@@ -186,7 +186,5 @@ int main(){
         q.pop();
     }
 
-    cout << "Hello World!" << endl;
-
     return 0;
 }
