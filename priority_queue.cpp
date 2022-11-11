@@ -13,12 +13,39 @@ private:
     size_t size;
     function<bool(const Type& e1, const Type& e2)> comparator;
 
+    int left(const int& elt){
+
+        int answer = (elt+1)*2 - 1;
+        if(answer>=size || elt>=size) return -1;
+        return answer;
+    }
+
+    int right(const int& elt){
+        
+        int answer = (elt+1)*2;
+        if(answer>=size || elt>=size) return -1;
+        return answer;
+    }
+
+    int parent(const int& elt){
+
+        if(elt==0 || elt>=size) return -1;
+        return (elt-1)/2;
+    }
+
 public:
     PriorityQueue() : heap({}), size(0), comparator([](const Type& e1, const Type& e2){ return e1 > e2; }) {}
 
     void push(const Type& elt){
 
-        assert(size == heap.size());
+        if(is_empty()){
+
+            heap.push_back(elt);
+            size=1;
+            return assert(size == heap.size());
+        }
+
+        
     }
 
     void display() const {
