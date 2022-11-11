@@ -13,6 +13,11 @@ private:
     size_t size;
     function<bool(const Type& e1, const Type& e2)> comparator;
 
+    void traverse(function<void(const Type& elt)> treat) const {
+
+        for(const Type& elt : heap) treat(elt);
+    }
+
     int left(const int& elt) const {
 
         int answer = (elt+1)*2 - 1;
@@ -78,6 +83,14 @@ private:
 public:
     PriorityQueue(function<bool(const Type& e1, const Type& e2)> comp = [](const Type& e1, const Type& e2){ return e1 > e2; }) : heap({}), size(0), comparator(comp) {}
 
+    ostream& to_ostream(ostream& output) const {
+
+        output << "[ ";
+        traverse([&output](const Type& elt)->void { output << elt << " "; });
+        output << "]";
+        return output;
+    }
+
     void push(const Type& elt){
 
         heap.push_back(elt);
@@ -99,13 +112,6 @@ public:
         return heap[0];
     }
 
-    void display() const {
-
-        cout << "[ ";
-        for(const Type& elt : heap) cout << elt << " ";
-        cout << "]" << endl;
-    }
-
     size_t count() const {
         return size;
     }
@@ -115,6 +121,11 @@ public:
     }
 };
 
+template<typename Type>
+ostream& operator<<(ostream& output, const PriorityQueue<Type>& pq){
+    return pq.to_ostream(output);
+}
+
 int main(){
 
     PriorityQueue<int> q;
@@ -123,14 +134,13 @@ int main(){
     q.push(2);
     q.push(10);
     q.push(11);
-    q.display();
+    cout << q << endl;
 
     while(!q.is_empty()){
 
         cout << q.top() << endl;
         q.pop();
     }
-
 
     return 0;
 }
