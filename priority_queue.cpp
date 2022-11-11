@@ -18,28 +18,40 @@ private:
         for(const Type& elt : heap) treat(elt);
     }
 
-    int left(const int& elt) const {
+    int left(const int& i) const {
 
-        int answer = (elt+1)*2 - 1;
-        if(answer>=size || elt>=size) return -1;
+        int answer = (i+1)*2 - 1;
+        if(answer>=size || i>=size) return -1;
         return answer;
     }
 
-    int right(const int& elt) const {
+    int right(const int& i) const {
         
-        int answer = (elt+1)*2;
-        if(answer>=size || elt>=size) return -1;
+        int answer = (i+1)*2;
+        if(answer>=size || i>=size) return -1;
         return answer;
     }
 
-    int parent(const int& elt) const {
+    int parent(const int& i) const {
 
-        if(elt<=0 || elt>=size) return -1;
-        return (elt-1)/2;
+        if(i<=0 || i>=size) return -1;
+        return (i-1)/2;
+    }
+
+    bool is_leaf(const int& i) const {
+        return left(i)==-1 && right(i)==-1;
     }
 
     int last_elt() const {
         return size-1;
+    }
+
+    int find(const Type& elt) const {
+
+        for(int i=0; i<size; ++i){
+            if(heap[i] == elt) return i;
+        }
+        return -1;
     }
 
     int better_elt(const int& e1, const int& e2) const {
@@ -124,6 +136,20 @@ public:
         return heap[0];
     }
 
+    bool remove(const Type& value){
+
+        int f = find(value);
+        if(f == -1) return false;
+
+        swap(heap[f], heap[last_elt()]);
+        heap.pop_back();
+        assert(--size == heap.size() && "heap size is not equal to queue size");
+        
+        if(is_leaf(f)) bubble_up(f);
+        else bubble_down(f);
+        return true;
+    }
+
     size_t count() const {
         return size;
     }
@@ -142,7 +168,7 @@ ostream& operator<<(ostream& output, const PriorityQueue<Type>& pq){
 
 int main(){
 
-    PriorityQueue<int> q({1, 10, 90, 13, 101});
+    PriorityQueue<int> q({2, 60, 4, -1, 0, 100, -13});
     cout << "Priority Queue: " << q << endl;
 
     while(!q.is_empty()){
