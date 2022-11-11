@@ -18,6 +18,15 @@ private:
         for(const Type& elt : heap) treat(elt);
     }
 
+    void pre_order(const int& start, function<void(const Type& elt)> treat) const {
+
+        if(start == -1) return;
+
+        treat(heap[start]);
+        pre_order(left(start), treat);
+        pre_order(right(start), treat);
+    }
+
     int left(const int& i) const {
 
         int answer = (i+1)*2 - 1;
