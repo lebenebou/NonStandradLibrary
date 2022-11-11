@@ -83,6 +83,16 @@ private:
 public:
     PriorityQueue(function<bool(const Type& e1, const Type& e2)> comp = [](const Type& e1, const Type& e2){ return e1 > e2; }) : heap({}), size(0), comparator(comp) {}
 
+    PriorityQueue(const vector<Type>& v, function<bool(const Type& e1, const Type& e2)> comp = [](const Type& e1, const Type& e2){ return e1 > e2; }){
+
+        heap = {};
+        size = 0;
+        comparator = comp;
+
+        for(const Type& elt : v) push(elt);
+        assert(size == heap.size() && "heap size not equal to queue size");
+    }
+
     ostream& to_ostream(ostream& output) const {
 
         output << "[ ";
@@ -128,12 +138,7 @@ ostream& operator<<(ostream& output, const PriorityQueue<Type>& pq){
 
 int main(){
 
-    PriorityQueue<int> q;
-
-    q.push(1);
-    q.push(2);
-    q.push(10);
-    q.push(11);
+    PriorityQueue<int> q({1, 10, 90, 13, 101}, [](const int& v1, const int& v2)->bool { return v1 < v2; });
     cout << q << endl;
 
     while(!q.is_empty()){
