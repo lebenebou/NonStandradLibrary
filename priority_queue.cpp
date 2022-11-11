@@ -93,6 +93,8 @@ public:
         assert(size == heap.size() && "heap size not equal to queue size");
     }
 
+    PriorityQueue(const PriorityQueue<Type>& other) = default;
+
     ostream& to_ostream(ostream& output) const {
 
         output << "[ ";
@@ -129,6 +131,8 @@ public:
     bool is_empty() const {
         return size==0;
     }
+
+    ~PriorityQueue() = default;
 };
 
 template<typename Type>
@@ -138,8 +142,8 @@ ostream& operator<<(ostream& output, const PriorityQueue<Type>& pq){
 
 int main(){
 
-    PriorityQueue<int> q({1, 10, 90, 13, 101}, [](const int& v1, const int& v2)->bool { return v1 < v2; });
-    cout << q << endl;
+    PriorityQueue<int> q({1, 10, 90, 13, 101});
+    cout << "Priority Queue: " << q << endl;
 
     while(!q.is_empty()){
 
