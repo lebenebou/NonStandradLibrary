@@ -33,6 +33,11 @@ private:
     
     bool insert(Node*& start, const Type& new_value){
 
+        if(!start){
+            root = new Node(new_value);
+            return size=1;
+        }
+
         if(equalizer(new_value, start->value)) return false;
 
         if(comparator(new_value, start->value)){
@@ -146,12 +151,6 @@ public:
     }
 
     bool insert(const Type& new_value){
-
-        if(is_empty()){
-
-            ++size;
-            return root = new Node(new_value);
-        }
 
         return insert(root, new_value);
     }
