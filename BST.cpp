@@ -138,6 +138,13 @@ public:
         return this;
     }
 
+    ostream& to_ostream(ostream& output) const {
+
+        output << "[ ";
+        bfs(root, [&output](Node*& n)->void { output << n->value << " "; });
+        return output << "]";
+    }
+
     bool insert(const Type& new_value){
 
         if(is_empty()){
@@ -207,12 +214,17 @@ void swap(BST<Type>& t1, BST<Type>& t2){
     swap(t1.equalizer, t2.equalizer);
 }
 
+template<typename Type>
+ostream& operator<<(ostream& output, const BST<Type>& tree){
+    return tree.to_ostream(output);
+}
+
 int main(){
 
     BST<int> tree({2, 1, 3});
     
     BST<int> t2 = tree;
-    t2.display();
+    cout << t2 << endl;
 
     cout << tree.accumulate([](const int& a, const int& b){return a+b;}, 0) << endl;
 
