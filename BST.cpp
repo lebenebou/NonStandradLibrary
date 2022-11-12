@@ -96,7 +96,7 @@ private:
 
         while(!q.empty()){
 
-            Node* current = q.top();
+            Node* current = q.front();
             process(current);
             q.pop();
 
@@ -139,26 +139,39 @@ public:
         return contains(root, elt);
     }
 
+    Type accumulate(function<Type(const Type& a, const Type& b)> op, const Type& zero) const {
+
+        Type answer = zero;
+        bfs(root, [](Node*& n)->void { answer = op(answer, n->value); });
+        return answer;
+    }
+
     bool is_empty() const {
         return !root;
     }
 
     void display(const short& traversal_type = 1) const {
 
+        node_processor print_val = [](Node*& n)->void { cout << n->value << " "; };
+
         cout << "[ ";
 
         switch (traversal_type){
             
             case 1:
-                in_order(root, [](Node*& n)->void { cout << n->value << " "; });
+                in_order(root, print_val);
                 break;
 
             case 2:
-                pre_order(root, [](Node*& n)->void { cout << n->value << " "; });
+                pre_order(root, print_val);
+                break;
+
+            case 3:
+                post_order(root, print_val);
                 break;
 
             default:
-                post_order(root, [](Node*& n)->void { cout << n->value << " "; });
+                bfs(root, print_val);
                 break;
         }
 
@@ -174,7 +187,7 @@ int main(){
 
     BST<int> tree({2, 1, 3});
     
-    cout << tree.contains(1) << endl;
+    tree.display(4);
 
     return 0;
 }
