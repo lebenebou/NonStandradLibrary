@@ -221,12 +221,12 @@ ostream& operator<<(ostream& output, const BST<Type>& tree){
 
 int main(){
 
-    BST<int> tree({2, 1, 3});
+    BST<int> tree({2, 1, 10});
     
     BST<int> t2 = tree;
     cout << t2 << endl;
 
-    cout << tree.accumulate([](const int& a, const int& b){return a+b;}, 0) << endl;
+    cout << tree.accumulate([](const int& a, const int& b){return a*b;}, 1) << endl;
 
     return 0;
 }
