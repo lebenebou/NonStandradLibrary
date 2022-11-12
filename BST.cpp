@@ -19,6 +19,9 @@ private:
         Node(const Type& v) : value(v), left(nullptr), right(nullptr){}
     };
 
+    template<typename T>
+    friend void swap(BST<T>& t1, BST<T>& t2);
+
     typedef function<void(Node*&)> node_processor;
     typedef function<bool(const Type&, const Type&)> comp_type;
 
@@ -124,6 +127,17 @@ public:
         for(const Type& elt : v) insert(elt);
     }
 
+    BST(const BST<Type>& other) : root(nullptr), size(0), comparator(other.comparator), equalizer(other.equalizer){
+
+        other.bfs(other.root, [this](Node*& n)->void { this->insert(n->value); });
+    }
+
+    BST& operator=(BST<Type> other){
+
+        swap(*this, other);
+        return this;
+    }
+
     bool insert(const Type& new_value){
 
         if(is_empty()){
@@ -152,7 +166,7 @@ public:
 
     void display(const short& traversal_type = 1) const {
 
-        node_processor print_val = [](Node*& n)->void { cout << n->value << " "; };
+        const node_processor print_val = [](Node*& n)->void { cout << n->value << " "; };
 
         cout << "[ ";
 
@@ -183,12 +197,24 @@ public:
     }
 };
 
+template<typename Type>
+void swap(BST<Type>& t1, BST<Type>& t2){
+
+    using std::swap;
+    swap(t1.root, t2.root);
+    swap(t1.size, t2.size);
+    swap(t1.comparator, t2.comparator);
+    swap(t1.equalizer, t2.equalizer);
+}
+
 int main(){
 
     BST<int> tree({2, 1, 3});
     
-    tree.display(4);
+    BST<int> t2 = tree;
+    t2.display();
+
     cout << tree.accumulate([](const int& a, const int& b){return a+b;}, 0) << endl;
-    
+
     return 0;
 }
