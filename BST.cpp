@@ -62,7 +62,7 @@ private:
         return contains(start->right, elt);
     }
 
-    void in_order(Node* start, node_processor process) const {
+    void in_order(Node* start, const node_processor& process) const {
 
         if(!start) return;
 
@@ -71,7 +71,7 @@ private:
         in_order(start->right, process);
     }
 
-    void pre_order(Node* start, node_processor process) const {
+    void pre_order(Node* start, const node_processor& process) const {
 
         if(!start) return;
 
@@ -80,7 +80,7 @@ private:
         pre_order(start->right, process);
     }
 
-    void post_order(Node* start, node_processor process) const {
+    void post_order(Node* start, const node_processor& process) const {
 
         if(!start) return;
 
@@ -89,7 +89,7 @@ private:
         process(start);
     }
 
-    void bfs(Node* start, node_processor process) const {
+    void bfs(Node* start, const node_processor& process) const {
 
         queue<Node*> q;
         q.push(start);
@@ -139,10 +139,10 @@ public:
         return contains(root, elt);
     }
 
-    Type accumulate(function<Type(const Type& a, const Type& b)> op, const Type& zero) const {
+    Type accumulate(const function<Type(const Type& a, const Type& b)>& op, const Type& zero) const {
 
         Type answer = zero;
-        bfs(root, [](Node*& n)->void { answer = op(answer, n->value); });
+        bfs(root, [&answer, op](Node*& n)->void { answer = op(answer, n->value); });
         return answer;
     }
 
@@ -188,6 +188,7 @@ int main(){
     BST<int> tree({2, 1, 3});
     
     tree.display(4);
-
+    cout << tree.accumulate([](const int& a, const int& b){return a+b;}, 0) << endl;
+    
     return 0;
 }
