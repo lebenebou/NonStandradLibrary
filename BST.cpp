@@ -2,6 +2,7 @@
 #include <iostream>
 #include <vector>
 #include <functional>
+#include <queue>
 using namespace std;
 
 template<typename Type>
@@ -86,6 +87,22 @@ private:
         post_order(start->left, process);
         post_order(start->right, process);
         process(start);
+    }
+
+    void bfs(Node* start, node_processor process) const {
+
+        queue<Node*> q;
+        q.push(start);
+
+        while(!q.empty()){
+
+            Node* current = q.top();
+            process(current);
+            q.pop();
+
+            if(current->left) q.push(current->left);
+            if(current->right) q.push(current->right);
+        }
     }
 
 public:
