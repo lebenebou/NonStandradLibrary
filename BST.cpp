@@ -3,6 +3,7 @@
 #include <vector>
 #include <functional>
 #include <queue>
+#include <cmath>
 using namespace std;
 
 template<typename Type>
@@ -68,6 +69,12 @@ private:
 
         if(comparator(elt, start->value)) return contains(start->left, elt);
         return contains(start->right, elt);
+    }
+
+    size_t height(Node* start) const {
+
+        if(!start) return 0;
+        return 1 + std::max(height(start->left), height(start->right));
     }
 
     void in_order(Node* start, const node_processor& process) const {
@@ -159,6 +166,10 @@ public:
         return contains(root, elt);
     }
 
+    size_t height() const {
+        return height(root);
+    }
+
     Type accumulate(const function<Type(const Type& a, const Type& b)>& op, const Type& zero) const {
 
         Type answer = zero;
@@ -196,6 +207,10 @@ public:
         }
 
         cout << "]" << endl;
+    }
+
+    void draw() const {
+        
     }
 
     ~BST(){
