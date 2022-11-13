@@ -209,10 +209,6 @@ public:
         cout << "]" << endl;
     }
 
-    void draw() const {
-        
-    }
-
     ~BST(){
         post_order(root, [](Node*& n)->void { delete n; });
     }
@@ -235,12 +231,8 @@ ostream& operator<<(ostream& output, const BST<Type>& tree){
 
 int main(){
 
-    BST<int> tree({2, 1, 10});
-    
-    BST<int> t2 = tree;
-    cout << t2 << endl;
-
-    cout << tree.accumulate([](const int& a, const int& b){return a*b;}, 1) << endl;
+    BST<int> tree({8, 3, 10, 1, 6, 14, 4, 7, 13});
+    tree.display(4);
 
     return 0;
 }
