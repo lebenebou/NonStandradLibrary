@@ -14,7 +14,6 @@ private:
     function<bool(const Type& e1, const Type& e2)> comparator;
 
     void traverse(function<void(const Type& elt)> treat) const {
-
         for(const Type& elt : heap) treat(elt);
     }
 
@@ -177,7 +176,7 @@ ostream& operator<<(ostream& output, const PriorityQueue<Type>& pq){
 
 int main(){
 
-    PriorityQueue<int> q({2, 60, 4, -1, 0, 100, -13});
+    PriorityQueue<int> q({1, 4, 100, -10, 101});
     cout << "Priority Queue: " << q << endl;
 
     while(!q.is_empty()){
