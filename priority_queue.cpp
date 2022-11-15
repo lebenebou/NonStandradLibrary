@@ -101,6 +101,8 @@ public:
         for(const Type& elt : v) this->push(elt);
     }
 
+    PriorityQueue(const PriorityQueue<Type>& other) = default;
+
     void push(const Type& value){
 
         heap.push_back(value);
@@ -134,6 +136,8 @@ public:
     bool is_empty() const {
         return size()==0;
     }
+
+    ~PriorityQueue() = default;
 };
 
 int main(int argc, char* argv[]){
