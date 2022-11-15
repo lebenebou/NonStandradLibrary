@@ -2,7 +2,6 @@
 #include <iostream>
 #include <vector>
 #include <functional>
-#include <cmath>
 using namespace std;
 
 template<typename Type>
