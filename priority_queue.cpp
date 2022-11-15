@@ -181,7 +181,7 @@ int main(){
 
     while(!q.is_empty()){
 
-        cout << q.top() << endl;
+        cout << "Pop: " << q.top() << endl;
         q.pop();
     }
 
