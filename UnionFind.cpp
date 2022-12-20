@@ -1,99 +1,80 @@
 
 #include <iostream>
 #include <vector>
+#include <cassert>
 using namespace std;
 
 class UnionFind{
 
-    vector<signed int> parent;
-    bool collapsed;
+private:
+    vector<int> parent;
+    size_t comps;
 
-    public:
-        UnionFind(const size_t& n){
+public:
+    UnionFind(const size_t& n){
+        vector<int> tmp(n, -1);
+        parent = tmp;
+        comps = n;
+    }
 
-            vector<signed int> tmp(n, -1);
-            parent = tmp;
-            collapsed = false;
+    bool join(size_t x, size_t y){
+
+        size_t bx = find(x);
+        size_t by = find(y);
+
+        if(bx == by) return false; // cycle detected
+        
+        if(parent[bx] < parent[by]){ // x has more elements in its component
+
+            parent[bx] += parent[by];
+            parent[by] = bx;
+        }
+        else{ // y has more elements in his component
+
+            parent[by] += parent[bx];
+            parent[bx] = by;
         }
 
-        signed int find(size_t elt){
+        --comps;
+        return true;
+    }
 
-            if(collapsed){
-                cout << "Cannot find " << elt << ", this instance is collapsed" << endl;
-                return 0;
-            }
+    size_t find(size_t x){
 
-            while(parent[elt] >= 0){
+        size_t boss = x;
+        while(parent[boss] > -1) boss = parent[boss];
 
-                if(parent[parent[elt]] >= 0) parent[elt] = parent[parent[elt]]; // for optimization
-                elt = parent[elt];
-            }
-            return elt;
-        }
-
-        bool join(const size_t& e1, const size_t& e2){
+        while(x != boss){
             
-            if(collapsed){
-                cout << "Cannot perform join operation, this instance is collapsed" << endl;
-                return false;
-            }
-
-            const int& p1 = find(e1);
-            const int& p2 = find(e2);
-
-            if(p1 == p2) return false;
-            // cycle detected
-
-            if(parent[p1] > parent[p2]){
-                parent[p2] += parent[p1];
-                parent[p1] = p2;
-            }
-
-            else{
-                parent[p1] += parent[p2];
-                parent[p2] = p1;
-            }           
-            
-            return true;
+            if(parent[x]!=boss) parent[parent[x]] = boss;
+            x = parent[x];
         }
+        return boss;
+    }
 
-        void collapse(){
+    size_t connected_comps() const {
+        return comps;
+    }
 
-            vector<int> roots;
-            for(size_t i=0; i<parent.size(); i++){
-                
-                const auto& elt = parent[i];
-                if(elt >=0) roots.push_back(find(elt));
-                if(elt < 0) roots.push_back(i);
-            }
-            parent = roots;
-            collapsed = true;
-        }
+    void display() const {
+        
+        for(const int& elt : parent) cout << elt << " ";
+        cout << endl;
+    }
 
-        size_t size() const {
-            return parent.size();
-        }
-
-        vector<signed int> contents() const {
-            return parent;
-        }
-
-        void display() const {
-
-            for(const auto& elt : parent) cout << elt << " ";
-            cout << endl;
-        }
 };
 
 int main(){
 
-    const size_t N = 4;
-    UnionFind uf(N+1);
+    UnionFind uf(4);
 
-    if(uf.join(1, 2)) cout << "Joined" << endl;
-    if(uf.join(2, 3)) cout << "Joined" << endl;
+    uf.join(0, 1);
+    uf.join(2, 0);
+    // uf.join(0, 3);
 
-    uf.display();    
+    uf.display();
+    cout << uf.connected_comps() << endl;
+
 
     return 0;
 }
