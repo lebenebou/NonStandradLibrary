@@ -3,7 +3,7 @@
 #include <vector>
 #include <functional>
 #include <queue>
-#include <cmath>
+#include <stack>
 using namespace std;
 
 template<typename Type>
@@ -77,13 +77,25 @@ private:
         return 1 + std::max(height(start->left), height(start->right));
     }
 
-    void in_order(Node* start, const node_processor& process) const {
+    void in_order(Node* current, const node_processor& process) const {
 
-        if(!start) return;
+        stack<Node*> stack;
+        
+        while(true){
 
-        in_order(start->left, process);
-        process(start);
-        in_order(start->right, process);
+            if(current){
+                stack.push(current);
+                current = current->left;
+            }
+            else if(!stack.empty()){ // node is null but stack not empty
+                
+                current = stack.top();
+                stack.pop();
+                process(current);
+                current = current->right;
+            }
+            else return; // stack is empty and node is null
+        }
     }
 
     void pre_order(Node* start, const node_processor& process) const {
@@ -136,7 +148,7 @@ public:
         comparator = comp;
         equalizer = equ;
 
-        for(const Type& elt : v) insert(elt);
+        for(const Type& elt : v) this->insert(elt);
     }
 
     BST(const BST<Type>& other) : root(nullptr), size(0), comparator(other.comparator), equalizer(other.equalizer){
@@ -232,7 +244,7 @@ ostream& operator<<(ostream& output, const BST<Type>& tree){
 int main(){
 
     BST<int> tree({8, 3, 10, 1, 6, 14, 4, 7, 13});
-    tree.display(4);
+    tree.display(1);
 
     return 0;
 }
