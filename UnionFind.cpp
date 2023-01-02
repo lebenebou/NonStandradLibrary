@@ -58,6 +58,9 @@ public:
         cout << endl;
     }
 
+    vector<int> content() const {
+        return parent;
+    }
 };
 
 int main(){
