@@ -11,11 +11,7 @@ private:
     size_t comps;
 
 public:
-    UnionFind(const size_t& n){
-        vector<int> tmp(n, -1);
-        parent = tmp;
-        comps = n;
-    }
+    UnionFind(const size_t& n) : parent(vector<int>(n, -1)), comps(n) {}
 
     bool join(size_t x, size_t y){
 
@@ -70,7 +66,7 @@ int main(){
 
     uf.join(0, 1);
     uf.join(2, 0);
-    // uf.join(0, 3);
+    uf.join(0, 3);
 
     uf.display();
     cout << uf.connected_comps() << endl;
