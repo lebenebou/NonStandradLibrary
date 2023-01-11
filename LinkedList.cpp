@@ -20,13 +20,11 @@ private:
 
     Node* node_at_index(size_t index) const {
 
-        if(index<0 || index>=size) return nullptr;
-
+        if(index >= size) return nullptr;
         Node* jumper = head;
         while(index--) jumper = jumper->next;
         return jumper;
     }
-
 
     template<typename T>
     friend void swap(LinkedList<T>& l1, LinkedList<T>& l2);
@@ -35,21 +33,18 @@ public:
     LinkedList() : head(nullptr), size(0) {}
 
     LinkedList(const vector<Type>& v) : head(nullptr), size(0) {
-        for(size_t i=v.size(); i>0; --i) push_front(v[i-1]);
+
+        for(auto it=v.rbegin(); it!=v.rend(); ++it) push_front(*it);
     }
 
     LinkedList(const LinkedList& other) : head(new Node(other.head->value)), size(1) {
 
-        Node* j1 = this->head;
-        Node* j2 = other.head->next;
+        Node* jumper = head;
+        for(Node* o=other.head->next; o!=nullptr; o = o->next){
 
-        while(this->size < other.size){
-
-            j1->next = new Node(j2->value, nullptr);
+            jumper->next = new Node(o->value);
             ++size;
-
-            j1 = j1->next;
-            j2 = j2->next;
+            jumper = jumper->next;
         }
     }
 
