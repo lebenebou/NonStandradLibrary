@@ -1,154 +1,101 @@
-
 #include <iostream>
 #include <vector>
-#include <functional>
 using namespace std;
 
 template<typename Type>
 class PriorityQueue{
-
 private:
-    typedef function<bool(const Type&, const Type&)> comp_type;
-    typedef function<void(const Type&)> element_processor;
-
     vector<Type> heap;
-    comp_type comparator;
 
-    void traverse(const element_processor& process) const {
-        
-        for(const Type& elt : heap) process(elt);
+    int left(const int& index) const {
+
+        int answer = index*2 + 1;
+        return answer>=size() ? -1:answer;
     }
 
-    void pre_order(const int& start, const element_processor& process) const {
-        
-        if(start == -1 || is_empty()) return;
+    int right(const int& index) const {
 
-        process(heap[start]);
-        pre_order(left(start), process);
-        pre_order(right(start), process);
+        int answer = index*2 + 2;
+        return answer>=size() ? -1:answer;
     }
 
-    int validate(const size_t& index) const {
-        
-        if(index >= size()) return -1;
-        return index;
+    int parent(const int& index) const {
+        return index==0 ? -1 : (index-1)/2;
     }
 
-    int left(const size_t& index) const {
-        return validate((index+1)*2 - 1);
-    }
+    int better_child(const int& current) const {
 
-    int right(const size_t& index) const {
-        return validate((index+1)*2);
-    }
+        if(left(current)==-1 && right(current)==-1) return -1;
+        if(left(current)==-1) return right(current);
+        if(right(current)==-1) return left(current);
 
-    int parent(const size_t& index) const {
-        
-        if(index==0 || index>=size()) return -1;
-        return (index+1)/2 - 1;
-    }
-
-    // returns last element index
-    int last_elt() const {
-        return size()-1;
-    }
-
-    // returns index of higher priority
-    int better_elt(const size_t& e1, const size_t& e2) const {
-
-        if(e1 >= size() && e2>=size()) return -1;
-        if(e1 >= size()) return e2;
-        if(e2 >= size()) return e1;
-
-        if(comparator(heap[e1], heap[e2])) return e1;
-        return e2;
-    }
-
-    void bubble_up(size_t index){
-
-        if(parent(index) == -1) return;
-
-        while(comparator(heap[index], heap[parent(index)])){
-
-            swap(heap[index], heap[parent(index)]);
-            index = parent(index);
-
-            if(parent(index) == -1) return;
-        }
-    }
-
-    void bubble_down(size_t index){
-
-        int m = better_elt(left(index), right(index));
-        if(m == -1) return; // index is at a leaf (no children)
-
-        while(comparator(heap[m], heap[index])){
-
-            swap(heap[m], heap[index]);
-
-            index = m;
-            m = better_elt(left(index), right(index));
-
-            if(m == -1) return; // index reached a leaf
-        }
+        return heap[right(current)] < heap[left(current)] ? left(current):right(current);
     }
 
 public:
-    PriorityQueue(const comp_type& comp = [](const Type& e1, const Type& e2){ return e1 > e2; }) : heap({}), comparator(comp) {}
-    
-    PriorityQueue(const vector<Type>& v, const comp_type& comp = [](const Type& e1, const Type& e2){ return e1 > e2; }) : heap({}), comparator(comp) {
+    PriorityQueue() = default;
+    PriorityQueue(const vector<Type>& v) : PriorityQueue() {
+
+        heap.reserve(v.size());
         for(const Type& elt : v) this->push(elt);
     }
 
-    PriorityQueue(const PriorityQueue<Type>& other) = default;
+    void push(const Type& new_value){
 
-    void push(const Type& value){
+        heap.push_back(new_value);
+        if(size() == 1) return; // queue was emtpy
+        
+        int p = parent(size()-1);
+        int current = size()-1;
 
-        heap.push_back(value);
-        bubble_up(last_elt());
+        while(p!=-1 && heap[p] < heap[current]){
+
+            swap(heap[current], heap[p]);
+            current = p;
+            p = parent(current);
+        }
     }
 
     void pop(){
 
-        if(is_empty()) throw "Cannot pop from empty queue";
+        if(is_empty()) return;
+        if(size() == 1) return heap.pop_back();
 
-        swap(heap[0], heap[last_elt()]);
+        swap(*heap.begin(), *heap.rbegin());
         heap.pop_back();
-        bubble_down(0);
+
+        int current = 0;
+        int c = better_child(current);
+
+        while(c!=-1 && heap[current] < heap[c]){
+
+            swap(heap[current], heap[c]);
+            current = c;
+            c = better_child(current);
+        }
     }
 
     Type top() const {
-        return heap[0];
-    }
-
-    void display() const {
-        
-        cout << "[ ";
-        traverse([](const Type& elt){ cout << elt << " "; });
-        cout << "]" << endl;
-    }
-
-    size_t size() const {
-        return heap.size();
+        return *heap.begin();
     }
 
     bool is_empty() const {
-        return size()==0;
+        return heap.begin() == heap.end();
     }
 
-    ~PriorityQueue() = default;
+    int size() const {
+        return this->heap.size();
+    }
 };
 
-int main(int argc, char* argv[]){
+int main(int argc, char const *argv[])
+{   
+    PriorityQueue<string> q({"c", "a", "b"});
 
-    PriorityQueue<int> pq({10, 11, 13, -2, 200});
+    while(!q.is_empty()){
 
-    pq.display();
-
-    while(!pq.is_empty()){
-
-        cout << pq.top() << endl;
-        pq.pop();
+        cout << q.top() << endl;
+        q.pop();
     }
 
     return 0;
