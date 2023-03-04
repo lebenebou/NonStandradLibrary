@@ -3,88 +3,77 @@
 #include <vector>
 using namespace std;
 
-template<typename Type>
 class Queue{
 
-public: // interface for a queue
-    virtual void display() const = 0;
-
-    virtual void push(const Type& new_value) = 0;
-    virtual void dequeue() = 0;
-
-    virtual Type front() const = 0;
-    virtual Type back() const = 0;
+public:
+    virtual void push(const short& elt) = 0;
+    virtual void pop() = 0;
+    virtual short front() const = 0;
 
     virtual size_t length() const = 0;
+    
     virtual bool is_empty() const = 0;
     virtual void clear() = 0;
 
-    virtual ~Queue(){}
+    virtual ostream& to_ostream(ostream& output) const = 0;
 };
 
-template<typename Type>
-class LinkedQueue : public Queue<Type> {
+class ArrayQueue : public Queue{
 
 private:
-    struct Node{
-
-        Type value;
-        Node* next;
-
-        Node(const Type& v, Node* n = nullptr) : value(v), next(n){}
-    };
-
-    Node* first;
-    Node* last;
+    vector<short> q;
     size_t size;
 
+    int start;
+    int end;
+
+    void increment(int& index) const {
+        index = index+1 % q.size();
+    }
+
+    int incremented(const int& index) const {
+        return ((index+1) % q.size());
+    }
+
 public:
-    LinkedQueue() : first(nullptr), last(nullptr), size(0){}
+    ArrayQueue(const size_t& cap) : start(0), end(0), size(0) {
+        
+        this->q = vector<short>(cap+1);
+    }
 
-    LinkedQueue(const vector<Type>& v) : first(nullptr), last(nullptr), size(0){
-        for(const Type& elt : v) push(elt);
-    } 
+    ostream& to_ostream(ostream& output) const override {
 
-    void push(const Type& new_value) override {
+        output << "[ ";
+        for(int i=start; i!=end; increment(i)) output << q[i] << " ";
+        output << "]";
+        return output;
+    }
 
-        if(is_empty()) first = last = new Node(new_value, nullptr);
-        else{
-            last = last->next = new Node(new_value, nullptr);
-            // copyright Youssef Yammine
+    void push(const short& new_value) override {
+
+        if(is_full()) {
+            cerr << "cannot push if queue is full" << endl;
+            return;
         }
 
+        q[end] = new_value;
         ++size;
+        increment(end);
     }
 
-    Type front() const override {
+    void pop() override {
         
-        if(is_empty()) throw "Queue is empty, cannot return front";
-        return first->value;
-    }
-
-    Type back() const override {
-        
-        if(is_empty()) throw "Queue is empty, cannot return back";
-        return last->value;
-    }
-
-    void display() const override {
-        
-        cout << "[ ";
-        for(Node* jumper = first; jumper; jumper = jumper->next){
-            cout << jumper->value << " <- ";
+        if(is_empty()) {
+            cerr << "cannot pop if queue is empty" << endl;
+            return;
         }
-        cout << "]";
+
+        increment(start);
+        --size;
     }
 
-    void dequeue() override {
-
-        if(is_empty()) return;
-
-        Node* trash = first;
-        first = first->next;
-        delete trash;
-        --size;
+    short front() const override {
+        return q[start];
     }
 
     size_t length() const override {
@@ -92,131 +81,32 @@ public:
     }
 
     bool is_empty() const override {
-        return !first;
-    }
-
-    void clear() override {
-        while(!is_empty()) dequeue();
-    }
-
-    ~LinkedQueue(){
-        clear();
-    }
-};
-
-template<typename Type>
-class ArrayQueue : public Queue<Type> {
-
-private:
-
-    Type* q;
-    const size_t capacity;
-    size_t size;
-
-    size_t first;
-    size_t last;
-
-    // const static size_t MAX_SIZE = 1000;
-
-    void increment(size_t& index) const {
-        if(++index == capacity) index = 0;
-    }
-
-public:
-    ArrayQueue(const size_t& cap) : q(new Type[cap]), capacity(cap), size(0), first(0), last(0) {}
-
-    ArrayQueue(const vector<Type>& v) : q(new Type[v.size()*2]), capacity(v.size()*2), size(0), first(0), last(0) {
-        for(const Type& elt : v) push(elt);
-    }
-
-    void display() const override {
-
-        cout << "Queue: [ ";
-        for(size_t i = first; i!=last; increment(i)){
-            cout << q[i] << " < ";
-        }
-        cout << "]\n" << endl;
-        cout << "\t-Size: " << size << endl;
-        cout << "\t-Front: " << front() << endl;
-        cout << "\t-Back: " << back() << endl;
-        cout << "\t-Capacity: " << capacity << endl;
-    }
-
-    void push(const Type& new_value) override {
-
-        if(is_full()) throw "Queue capacity is full, cannot push element";
-
-        q[last] = new_value;
-        increment(last);
-        ++size;
-    }
-    
-    void dequeue() override {
-
-        if(is_empty()) throw "Queue is empty, cannot dequeue";
-        increment(first);
-        --size;
-    }
-
-    Type front() const override {
-
-        if(is_empty()) throw "Queue is empty, cannot return front";
-        return q[first];
-    }
-
-    Type back() const override {
-
-        if(is_empty()) throw "Queue is empty, cannot return back";
-        if(last>0) return q[last-1];
-        return q[capacity-1]; // last is 0
-    }
-
-    bool is_empty() const override {
-        return first==last; // or size==0
+        return start==end;
     }
 
     bool is_full() const {
-        return (size == capacity-1);
-    }
-
-    size_t length() const override {
-        return size;
+        return incremented(end) == start;
     }
 
     void clear() override {
-        first = last;
-        size = 0;
+        start = end = size = 0;
     }
 
-    ~ArrayQueue(){
-        delete[] q;
-    }
-
+    ~ArrayQueue() = default;
 };
 
-int main(int argc, char* argv[]){
+ostream& operator<<(ostream& output, const Queue& q){
+    return q.to_ostream(output);
+}
 
-    Queue<int>* q = new LinkedQueue<int>({1, 2, 3, 4});
-    cout << "Linked Queue: ";
+int main(int argc, char const *argv[]){
 
-    while(!q->is_empty()){
+    ArrayQueue q(10);
+    for(int i=1; i<=10; ++i) q.push(i);
+    for(int i=1; i<=5; ++i) q.pop();
+    for(int i=1; i<=3; ++i) q.push(17);
 
-        cout << q->front() << " ";
-        q->dequeue();
-    }
-
-    delete q; cout << endl;
-
-    q = new ArrayQueue<int>({5, 6, 7, 8});
-    cout << "Array Queue: ";
-
-    while(!q->is_empty()){
-
-        cout << q->front() << " ";
-        q->dequeue();
-    }
-
-    delete q; cout << endl;
+    cout << q << endl;
 
     return 0;
 }
