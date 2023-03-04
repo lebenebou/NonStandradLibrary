@@ -3,12 +3,13 @@
 #include <vector>
 using namespace std;
 
+template <typename Type>
 class Queue{
 
 public:
     virtual ostream& to_ostream(ostream& output) const = 0;
 
-    virtual void push(const short& elt) = 0;
+    virtual void push(const Type& elt) = 0;
     virtual void pop() = 0;
     virtual short front() const = 0;
 
@@ -17,11 +18,13 @@ public:
     virtual void clear() = 0;
 };
 
-ostream& operator<<(ostream& output, const Queue& q){
+template <typename Type>
+ostream& operator<<(ostream& output, const Queue<Type>& q){
     return q.to_ostream(output);
 }
 
-class ArrayQueue : public Queue {
+template <typename Type>
+class ArrayQueue : public Queue<Type> {
 
 private:
     vector<short> q;
@@ -98,7 +101,8 @@ public:
     ~ArrayQueue() = default;
 };
 
-class LinkedQueue : public Queue {
+template <typename Type>
+class LinkedQueue : public Queue<Type> {
 
 private:
     struct Node{
@@ -172,7 +176,7 @@ public:
 
 int main(int argc, char const *argv[]){
 
-    LinkedQueue q;
+    LinkedQueue<short> q;
     for(int i=1; i<=10; ++i) q.push(i);
     
     while(!q.is_empty()){
