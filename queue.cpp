@@ -6,19 +6,22 @@ using namespace std;
 class Queue{
 
 public:
+    virtual ostream& to_ostream(ostream& output) const = 0;
+
     virtual void push(const short& elt) = 0;
     virtual void pop() = 0;
     virtual short front() const = 0;
 
     virtual size_t length() const = 0;
-    
     virtual bool is_empty() const = 0;
     virtual void clear() = 0;
-
-    virtual ostream& to_ostream(ostream& output) const = 0;
 };
 
-class ArrayQueue : public Queue{
+ostream& operator<<(ostream& output, const Queue& q){
+    return q.to_ostream(output);
+}
+
+class ArrayQueue : public Queue {
 
 private:
     vector<short> q;
@@ -95,18 +98,88 @@ public:
     ~ArrayQueue() = default;
 };
 
-ostream& operator<<(ostream& output, const Queue& q){
-    return q.to_ostream(output);
-}
+class LinkedQueue : public Queue {
+
+private:
+    struct Node{
+
+        short value;
+        Node* next;
+
+        Node(const short& v, Node* n = nullptr) : value(v), next(n){}
+    };
+
+    size_t size;
+    Node* first;
+    Node* last;
+
+public:
+    LinkedQueue() : size(0), first(nullptr), last(nullptr) {}
+    
+    LinkedQueue(const vector<short>& v) : LinkedQueue() {
+        for(const short& elt : v) this->push(elt);
+    }
+
+    ostream& to_ostream(ostream& output) const override {
+
+        output << "[ ";
+        for(Node* jumper = first; jumper; jumper = jumper->next) output << jumper->value << " ";
+        output << "]";
+        return output;
+    }
+
+    void push(const short& new_value) override {
+
+        if(is_empty()) first = last = new Node(new_value);
+        else last = last->next = new Node(new_value); // copyright Youssef Yammine
+        ++size;
+    }
+
+    void pop() override {
+
+        if(is_empty()){
+            cerr << "Cannot pop from empty queue" << endl;
+            return;
+        }
+
+        Node* trash = first;
+        first = first->next;
+        delete trash;
+        --size;
+    }
+
+    short front() const override {
+        return first->value;
+    }
+
+    size_t length() const override {
+        return size;
+    }
+
+    bool is_empty() const override {
+        return !first;
+    }
+
+    void clear() override {
+
+        while(!is_empty()) pop();
+    }
+
+    ~LinkedQueue(){
+        clear();
+    }
+};
 
 int main(int argc, char const *argv[]){
 
-    ArrayQueue q(10);
+    LinkedQueue q;
     for(int i=1; i<=10; ++i) q.push(i);
-    for(int i=1; i<=5; ++i) q.pop();
-    for(int i=1; i<=3; ++i) q.push(17);
+    
+    while(!q.is_empty()){
 
-    cout << q << endl;
+        cout << q.front() << endl;
+        q.pop();
+    }
 
     return 0;
 }
