@@ -173,17 +173,3 @@ public:
         clear();
     }
 };
-
-int main(int argc, char const *argv[]){
-
-    LinkedQueue<short> q;
-    for(int i=1; i<=10; ++i) q.push(i);
-    
-    while(!q.is_empty()){
-
-        cout << q.front() << endl;
-        q.pop();
-    }
-
-    return 0;
-}
