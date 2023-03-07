@@ -11,7 +11,7 @@ public:
 
     virtual void push(const Type& elt) = 0;
     virtual void pop() = 0;
-    virtual short front() const = 0;
+    virtual Type front() const = 0;
 
     virtual size_t length() const = 0;
     virtual bool is_empty() const = 0;
@@ -27,7 +27,7 @@ template <typename Type>
 class ArrayQueue : public Queue<Type> {
 
 private:
-    vector<short> q;
+    vector<Type> q;
     size_t size;
 
     int start;
@@ -44,7 +44,7 @@ private:
 public:
     ArrayQueue(const size_t& cap) : start(0), end(0), size(0) {
         
-        this->q = vector<short>(cap+1);
+        this->q = vector<Type>(cap+1);
     }
 
     ostream& to_ostream(ostream& output) const override {
@@ -55,7 +55,7 @@ public:
         return output;
     }
 
-    void push(const short& new_value) override {
+    void push(const Type& new_value) override {
 
         if(is_full()) {
             cerr << "cannot push if queue is full" << endl;
@@ -78,7 +78,7 @@ public:
         --size;
     }
 
-    short front() const override {
+    Type front() const override {
         return q[start];
     }
 
@@ -107,10 +107,10 @@ class LinkedQueue : public Queue<Type> {
 private:
     struct Node{
 
-        short value;
+        Type value;
         Node* next;
 
-        Node(const short& v, Node* n = nullptr) : value(v), next(n){}
+        Node(const Type& v, Node* n = nullptr) : value(v), next(n){}
     };
 
     size_t size;
@@ -120,8 +120,8 @@ private:
 public:
     LinkedQueue() : size(0), first(nullptr), last(nullptr) {}
     
-    LinkedQueue(const vector<short>& v) : LinkedQueue() {
-        for(const short& elt : v) this->push(elt);
+    LinkedQueue(const vector<Type>& v) : LinkedQueue() {
+        for(const Type& elt : v) this->push(elt);
     }
 
     ostream& to_ostream(ostream& output) const override {
@@ -132,7 +132,7 @@ public:
         return output;
     }
 
-    void push(const short& new_value) override {
+    void push(const Type& new_value) override {
 
         if(is_empty()) first = last = new Node(new_value);
         else last = last->next = new Node(new_value); // copyright Youssef Yammine
@@ -152,7 +152,7 @@ public:
         --size;
     }
 
-    short front() const override {
+    Type front() const override {
         return first->value;
     }
 
