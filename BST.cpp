@@ -129,9 +129,7 @@ private:
     }
 
 public:
-    BST() : root(nullptr), size(0) {}
-
-    BST(const vector<Type>& v) : BST() {
+    BST(const vector<Type>& v = {}) : root(nullptr), size(0) {
         for(const Type& elt : v) this->insert(elt);
     }
 
