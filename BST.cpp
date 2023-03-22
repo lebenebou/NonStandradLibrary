@@ -24,24 +24,20 @@ private:
     friend void swap(BST<T>& t1, BST<T>& t2);
 
     typedef function<void(Node*&)> node_processor;
-    typedef function<bool(const Type&, const Type&)> comp_type;
 
     Node* root;
     size_t size;
-
-    comp_type comparator;
-    comp_type equalizer;
     
-    bool insert(Node*& start, const Type& new_value){
+    bool insert(Node* start, const Type& new_value){
 
         if(!start){
             root = new Node(new_value);
             return size=1;
         }
 
-        if(equalizer(new_value, start->value)) return false;
+        if(new_value==start->value) return false;
 
-        if(comparator(new_value, start->value)){
+        if(new_value < start->value){
 
             if(!start->left){
                 start->left = new Node(new_value);
@@ -51,7 +47,7 @@ private:
             return insert(start->left, new_value);
         }
 
-        else { // !comparator(new_value, start->value)
+        else{
 
             if(!start->right){
                 start->right = new Node(new_value);
@@ -65,9 +61,9 @@ private:
     bool contains(Node* start, const Type& elt) const {
 
         if(!start) return false;
-        if(equalizer(elt, start->value)) return true;
+        if(elt==start->value) return true;
 
-        if(comparator(elt, start->value)) return contains(start->left, elt);
+        if(elt < start->value) return contains(start->left, elt);
         return contains(start->right, elt);
     }
 
@@ -133,27 +129,17 @@ private:
     }
 
 public:
-    BST(comp_type comp = [](const Type& a, const Type& b)->bool { return a < b; }, comp_type equ = [](const Type& a, const Type& b)->bool { return a == b; }){
-        
-        root = nullptr;
-        size = 0;
-        comparator = comp;
-        equalizer = equ;
-    }
+    BST() : root(nullptr), size(0) {}
 
-    BST(const vector<Type>& v, comp_type comp = [](const Type& a, const Type& b)->bool { return a < b; }, comp_type equ = [](const Type& a, const Type& b)->bool { return a == b; }){
-        
-        root = nullptr;
-        size = 0;
-        comparator = comp;
-        equalizer = equ;
-
+    BST(const vector<Type>& v) : BST() {
         for(const Type& elt : v) this->insert(elt);
     }
 
-    BST(const BST<Type>& other) : root(nullptr), size(0), comparator(other.comparator), equalizer(other.equalizer){
+    BST(const BST<Type>& other) : root(nullptr), size(0){
 
-        other.bfs(other.root, [this](Node*& n)->void { this->insert(n->value); });
+        other.bfs(other.root, [this](Node*& n)->void {
+            this->insert(n->value);
+        });
     }
 
     BST& operator=(BST<Type> other){
@@ -165,7 +151,11 @@ public:
     ostream& to_ostream(ostream& output) const {
 
         output << "[ ";
-        bfs(root, [&output](Node*& n)->void { output << n->value << " "; });
+        bfs(root, [&output](Node*& n)->void {
+
+            output << n->value << " ";
+        });
+
         return output << "]";
     }
 
@@ -193,7 +183,7 @@ public:
         return !root;
     }
 
-    void display(const short& traversal_type = 1) const {
+    void display(short traversal_type = 1) const {
 
         const node_processor print_val = [](Node*& n)->void { cout << n->value << " "; };
 
@@ -222,7 +212,10 @@ public:
     }
 
     ~BST(){
-        post_order(root, [](Node*& n)->void { delete n; });
+
+        post_order(root, [](Node*& n)->void {
+            delete n;
+        });
     }
 };
 
@@ -232,8 +225,6 @@ void swap(BST<Type>& t1, BST<Type>& t2){
     using std::swap;
     swap(t1.root, t2.root);
     swap(t1.size, t2.size);
-    swap(t1.comparator, t2.comparator);
-    swap(t1.equalizer, t2.equalizer);
 }
 
 template<typename Type>
@@ -244,7 +235,7 @@ ostream& operator<<(ostream& output, const BST<Type>& tree){
 int main(){
 
     BST<int> tree({8, 3, 10, 1, 6, 14, 4, 7, 13});
-    tree.display(1);
+    cout << tree << endl;
 
     return 0;
 }
