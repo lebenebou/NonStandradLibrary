@@ -184,6 +184,10 @@ public:
         return !head;
     }
 
+    void clear(){
+        *this = LinkedList<Type>();
+    }
+
     ~LinkedList(){
         while(pop_front());
     }
