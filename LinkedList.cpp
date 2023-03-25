@@ -201,12 +201,3 @@ void swap(LinkedList<Type>& l1, LinkedList<Type>& l2){
     swap(l1.head, l2.head);
     swap(l1.size, l2.size);
 }
-
-int main(int argc, char* argv[]){
-
-    LinkedList<int> l({1, 2, 3});
-
-    cout << (l+l) << endl;
-
-    return 0;
-}
