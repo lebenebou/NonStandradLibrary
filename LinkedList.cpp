@@ -67,6 +67,7 @@ public:
         if(other.is_empty()) return *this;
 
         Node* last_node = node_at_index(size-1);
+        size += other.size;
         
         for(Node* jumper = other.head; jumper; jumper = jumper->next){
 
@@ -76,7 +77,7 @@ public:
         return *this;
     }
 
-    LinkedList<Type> operator+(const LinkedList<Type>& other){
+    LinkedList<Type> operator+(const LinkedList<Type>& other) const {
 
         return LinkedList(*this) += other;
     }
