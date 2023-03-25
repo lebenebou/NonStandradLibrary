@@ -64,13 +64,23 @@ void lengthTest(){
 
 void operatorTest(){
 
-    
+    LinkedList<int> l({1, 2});
+
+    l += LinkedList<int>({3, 4});
+    assert(to_string(l)=="1234" && "+= op not working correctly");
+    assert(to_string(l+l)=="12341234" && "+ op not working correctly");
+
+    l.clear();
+    l+=l;
+    assert(l.length()==0 && "+= op on empty list is bugged");
+    assert((l+l).length()==0 && "+ op on empty list is bugged");
 }
 
 int main(int argc, char const *argv[]){
 
     basicTest();
     lengthTest();
+    operatorTest();
 
     cout << "Passed all tests." << endl;
     return 0;
