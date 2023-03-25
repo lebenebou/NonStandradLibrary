@@ -1,6 +1,7 @@
 
 #include <iostream>
 #include <vector>
+#include <cassert>
 using namespace std;
 
 template<typename Type>
@@ -68,28 +69,26 @@ public:
 
         if(is_empty()) return push_front(new_value);
 
-        // list is not empty
         node_at_index(size-1)->next = new Node(new_value, nullptr);
-        ++size;
-        return true;
+        return ++size; 
     }
 
     bool push_front(const Type& new_value) {
         
-        head = new Node(new_value, head);
-        ++size;
-        return true;
+        // HEAD node is node a new node which the node after is the old HEAD
+        // in case of empty list, old HEAD is nullptr and this line still works
+        
+        return (++size && (head = new Node(new_value, head)));
     }
 
     bool pop_front(){
 
         if(is_empty()) return false;
 
-        Node* trash = head;
-        head = head->next;
-        delete trash;
-        --size;
-        return true;
+        Node* trash = head; // node to be deleted
+        head = head->next;  // move head one node forward
+        delete trash;       // delete old head
+        return size--;
     }
 
     bool pop_back(){
@@ -105,17 +104,16 @@ public:
 
     bool remove(const size_t& index){
 
-        if(index<0 || index>=size) return false;
-        if(index==size-1) return pop_back();
-        if(index==0) return pop_front();
+        if(index>=size) return false; // invalid index
+        if(index==0) return pop_front(); // first index
+        if(index==size-1) return pop_back(); // last index
 
         // index is in the middle
         Node* jumper = node_at_index(index-1);
         Node* trash = jumper->next;
         jumper->next = jumper->next->next;
         delete trash;
-        --size;
-        return true;
+        return size--;
     }
 
     bool insert(const Type& new_value, const size_t& index){
@@ -128,8 +126,7 @@ public:
         Node* jumper = node_at_index(index-1);
         jumper->next = new Node(new_value, jumper->next);
         
-        ++size;
-        return true;
+        return ++size; 
     }
 
     bool replace(const size_t& index, const Type& new_value){
@@ -137,7 +134,7 @@ public:
         Node* to_replace = node_at_index(index);
 
         if(to_replace) to_replace->value = new_value;
-        return to_replace;
+        return to_replace; // false if invalid index
     }
 
     bool contains(const Type& elt) const {
@@ -151,28 +148,19 @@ public:
     Type& operator[](const size_t& index){
 
         Node* wanted = node_at_index(index);
-        if(wanted) return wanted->value;
-        else throw "Index out of bounds";
+        assert(wanted!=nullptr && "Index out of bounds");
+        return wanted->value;
     }
 
     Type operator[](const size_t& index) const {
 
         Node* wanted = node_at_index(index);
-        if(wanted) return wanted->value;
-        else throw "Index out of bounds";
+        assert(wanted!=nullptr && "Index out of bounds");
+        return wanted->value;
     }
 
     bool is_empty() const {
         return !head;
-    }
-
-    void display() const {
-
-        cout << "Linked List: [ ";
-        for(Node* jumper = head; jumper!=nullptr; jumper = jumper->next){
-            cout << jumper->value << " ";
-        }
-        cout << "] of size " << size << endl;
     }
 
     ~LinkedList(){
@@ -195,19 +183,9 @@ void swap(LinkedList<Type>& l1, LinkedList<Type>& l2){
 
 int main(int argc, char* argv[]){
 
-    LinkedList<int> numbers({1, 12, 3, 5});
+    LinkedList<int> l({1, 2, 3});
 
-    if(numbers.insert(4, 3)) cout << "List of integers: " << numbers << endl;
-
-    while(numbers.pop_front()) cout << "PopFront: " << numbers << endl;
-    
-    cout << endl;
-
-    LinkedList<double> values({3.14, 2.71});
-
-    if(values.push_back(1.61)) cout << "List of doubles: " << values << endl;
-
-    while(values.pop_back()) cout << "PopBack: " << values << endl;
+    cout << l << endl;
 
     return 0;
 }
