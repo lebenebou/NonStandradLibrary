@@ -217,13 +217,3 @@ void swap(LinkedList<Type>& l1, LinkedList<Type>& l2){
     swap(l1.head, l2.head);
     swap(l1.size, l2.size);
 }
-
-
-int main(int argc, char const *argv[])
-{
-    LinkedList<int> l1;
-    LinkedList<int> l2;
-    l1+=l2;
-    
-    return 0;
-}
