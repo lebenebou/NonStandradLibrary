@@ -55,19 +55,21 @@ public:
         return *this;
     }
 
-    LinkedList<Type> operator+(const LinkedList<Type>& other){
+    LinkedList<Type>& operator+=(LinkedList<Type> other){
 
-        LinkedList<Type> result = *this;
-        Node* last_node = result.node_at_index(size-1);
-
-        Node* jumper = other.head;
-        while(jumper){
+        Node* last_node = node_at_index(size-1);
+        
+        for(Node* jumper = other.head; jumper; jumper = jumper->next){
 
             last_node->next = new Node(jumper->value);
             last_node = last_node->next;
-            jumper = jumper->next;
         }
-        return result;
+        return *this;
+    }
+
+    LinkedList<Type> operator+(const LinkedList<Type>& other){
+
+        return LinkedList(*this) += other;
     }
 
     ostream& to_ostream(ostream& output) const {
@@ -200,7 +202,7 @@ int main(int argc, char* argv[]){
 
     LinkedList<int> l({1, 2, 3});
 
-    cout << l+l << endl;
+    cout << (l+l) << endl;
 
     return 0;
 }
