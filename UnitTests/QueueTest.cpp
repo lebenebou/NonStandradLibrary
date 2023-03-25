@@ -2,7 +2,7 @@
 #include <iostream>
 #include <cassert>
 using namespace std;
-#include "../queue.cpp"
+#include "../Queue.cpp"
 
 void lengthTest(const bool& isArrayQueue){
 
