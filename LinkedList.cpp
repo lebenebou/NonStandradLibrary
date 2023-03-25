@@ -38,14 +38,23 @@ public:
         for(auto it=v.rbegin(); it!=v.rend(); ++it) push_front(*it);
     }
 
-    LinkedList(const LinkedList<Type>& other) : head(new Node(other.head->value)), size(1) {
+    LinkedList(const LinkedList<Type>& other) : head(nullptr), size(0) {
 
-        Node* jumper = head;
-        for(Node* o=other.head->next; o!=nullptr; o = o->next){
+        if(other.head){
 
-            jumper->next = new Node(o->value);
+            head = new Node(other.head->value);
             ++size;
-            jumper = jumper->next;
+        }
+        else return;
+
+        Node* j1 = head;
+        Node* j2 = other.head->next;
+
+        while(j2){
+
+            j1->next = new Node(j2->value);
+            j1 = j1->next;
+            j2 = j2->next;
         }
     }
 
@@ -56,6 +65,9 @@ public:
     }
 
     LinkedList<Type>& operator+=(LinkedList<Type> other){
+
+        if(is_empty()) return *this = other;
+        if(other.is_empty()) return *this;
 
         Node* last_node = node_at_index(size-1);
         
@@ -204,4 +216,14 @@ void swap(LinkedList<Type>& l1, LinkedList<Type>& l2){
     using std::swap;
     swap(l1.head, l2.head);
     swap(l1.size, l2.size);
+}
+
+
+int main(int argc, char const *argv[])
+{
+    LinkedList<int> l1;
+    LinkedList<int> l2;
+    l1+=l2;
+    
+    return 0;
 }
