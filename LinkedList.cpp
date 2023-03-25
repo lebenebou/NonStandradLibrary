@@ -38,14 +38,11 @@ public:
         for(auto it=v.rbegin(); it!=v.rend(); ++it) push_front(*it);
     }
 
-    LinkedList(const LinkedList<Type>& other) : head(nullptr), size(0) {
+    LinkedList(const LinkedList<Type>& other) : head(nullptr), size(other.length()) {
 
-        if(other.head){
+        if(other.is_empty()) return;
 
-            head = new Node(other.head->value);
-            ++size;
-        }
-        else return;
+        head = new Node(other.head->value);
 
         Node* j1 = head;
         Node* j2 = other.head->next;
