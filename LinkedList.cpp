@@ -38,7 +38,7 @@ public:
         for(auto it=v.rbegin(); it!=v.rend(); ++it) push_front(*it);
     }
 
-    LinkedList(const LinkedList& other) : head(new Node(other.head->value)), size(1) {
+    LinkedList(const LinkedList<Type>& other) : head(new Node(other.head->value)), size(1) {
 
         Node* jumper = head;
         for(Node* o=other.head->next; o!=nullptr; o = o->next){
@@ -49,10 +49,25 @@ public:
         }
     }
 
-    LinkedList& operator=(LinkedList other){
+    LinkedList<Type>& operator=(LinkedList<Type> other){
 
         swap(*this, other);
         return *this;
+    }
+
+    LinkedList<Type> operator+(const LinkedList<Type>& other){
+
+        LinkedList<Type> result = *this;
+        Node* last_node = result.node_at_index(size-1);
+
+        Node* jumper = other.head;
+        while(jumper){
+
+            last_node->next = new Node(jumper->value);
+            last_node = last_node->next;
+            jumper = jumper->next;
+        }
+        return result;
     }
 
     ostream& to_ostream(ostream& output) const {
@@ -185,7 +200,7 @@ int main(int argc, char* argv[]){
 
     LinkedList<int> l({1, 2, 3});
 
-    cout << l << endl;
+    cout << l+l << endl;
 
     return 0;
 }
