@@ -176,6 +176,10 @@ public:
         return wanted->value;
     }
 
+    size_t length() const {
+        return size;
+    }
+
     bool is_empty() const {
         return !head;
     }
