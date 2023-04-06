@@ -23,6 +23,9 @@ public:
     virtual bool pop_back() = 0;
     virtual bool pop_front() = 0;
 
+    virtual bool insert(Type& new_value, size_t index) = 0;
+    virtual bool remove(size_t index) = 0;
+
     virtual bool is_empty() const = 0;
     virtual size_t length() const final { return size; }
 
@@ -108,6 +111,42 @@ public:
         return true;
     }
 
+    bool insert(Type& new_value, size_t index) override {
+
+        if(index > this->size) return false;
+        if(index==0){
+            push_front(new_value);
+            return true;
+        }
+        if(index==this->size){
+            push_back(new_value);
+            return true;
+        }
+
+        Node* temp = node_at_index(index-1);
+        temp->next = new Node(new_value, temp->next);
+        return ++this->size;
+    }
+
+    bool remove(size_t index) override {
+
+        if(index >= this->size) return false;
+        if(index==0){
+            pop_front();
+            return true;
+        }
+        if(index==this->size-1){
+            pop_back();
+            return true;
+        }
+
+        Node* temp = node_at_index(index-1);
+        Node* trash = temp->next;
+        temp->next = temp->next->next;
+        delete trash;
+        return this->size--;
+    }
+
     bool is_empty() const override {
         return !head;
     }
@@ -131,7 +170,10 @@ int main(int argc, char const *argv[]){
 
     SingleList<int> l;
     for(int i=0; i<10; ++i) l.push_back(i);
-    cout << l << endl;
+    
+    l.remove(5);
+
+    cout << l << " of size " << l.length() << endl;
 
     return 0;
 }
