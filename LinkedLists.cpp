@@ -184,6 +184,14 @@ public:
     }
 };
 
+template <typename Type>
+void swap(SinglyLinkedList<Type>& l1, SinglyLinkedList<Type>& l2){
+
+    using std::swap;
+    swap(l1.head, l2.head);
+    swap(l1.size, l2.size);
+}
+
 template<typename Type>
 ostream& operator<<(ostream& output, const LinkedList<Type>& l){
     return l.to_ostream(output);
