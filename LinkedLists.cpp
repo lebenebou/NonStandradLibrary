@@ -23,7 +23,7 @@ public:
     virtual bool pop_back() = 0;
     virtual bool pop_front() = 0;
 
-    virtual bool insert(Type& new_value, size_t index) = 0;
+    virtual bool insert(const Type& new_value, size_t index) = 0;
     virtual bool remove(size_t index) = 0;
 
     virtual bool is_empty() const = 0;
@@ -34,7 +34,7 @@ public:
 };
 
 template<typename Type>
-class SingleList : public LinkedList<Type> {
+class SinglyLinkedList : public LinkedList<Type> {
     
 private:
     struct Node{
@@ -57,7 +57,31 @@ private:
     Node* head;
     
 public:
-    SingleList() : LinkedList<Type>(), head(nullptr) {}
+    SinglyLinkedList() : LinkedList<Type>(), head(nullptr) {}
+
+    SinglyLinkedList(const SinglyLinkedList<Type>& other) : head(nullptr) {
+
+        this->size = other.size;
+        if(other.is_empty()) return;
+        
+        head = new Node(other.head->value);
+
+        Node* j1 = head;
+        Node* j2 = other.head->next;
+
+        while(j2){
+
+            j1->next = new Node(j2->value);
+            j1 = j1->next;
+            j2 = j2->next;
+        }
+    }
+
+    SinglyLinkedList& operator=(SinglyLinkedList<Type> other){
+
+        swap(*this, other);
+        return *this;
+    }
 
     ostream& to_ostream(ostream& output) const override {
 
@@ -111,7 +135,7 @@ public:
         return true;
     }
 
-    bool insert(Type& new_value, size_t index) override {
+    bool insert(const Type& new_value, size_t index) override {
 
         if(index > this->size) return false;
         if(index==0){
@@ -155,25 +179,12 @@ public:
         while(pop_front());
     }
 
-    ~SingleList(){
+    ~SinglyLinkedList(){
         this->clear();
     }
 };
 
 template<typename Type>
 ostream& operator<<(ostream& output, const LinkedList<Type>& l){
-
     return l.to_ostream(output);
-}
-
-int main(int argc, char const *argv[]){
-
-    SingleList<int> l;
-    for(int i=0; i<10; ++i) l.push_back(i);
-    
-    l.remove(5);
-
-    cout << l << " of size " << l.length() << endl;
-
-    return 0;
 }
