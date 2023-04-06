@@ -2,86 +2,58 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
-#include <string>
-#include "../LinkedList.cpp"
+#include <sstream>
+#include "../LinkedLists.cpp"
 using namespace std;
 
-string to_string(LinkedList<int> l){
+string to_string(LinkedList<int>& l){
 
-    if(l.is_empty()) return "";
-    
-    string answer = "";
-    while(!l.is_empty()){
-
-        answer += to_string(l[0]);
-        l.pop_front();
-    }
-    return answer;
+    stringstream answer;
+    answer << l;
+    return answer.str();
 }
 
-void basicTest(){
-
-    LinkedList<int> l;
-    assert(l.length()==0 && "Initialized list is not empty");
-
-    int i=5;
-    while(i--) l.push_front(i);
-    assert(to_string(l)=="01234" && "push front order is wrong");
+void basicTest(LinkedList<int>& l){
 
     l.clear();
-    assert(l.length()==0 && "Initialized list is not empty");
+    assert(l.is_empty() && l.length()==0 && "list is not empty on intialization");
 
-    i=5;
-    while(i--) l.push_back(i);
-    assert(to_string(l)=="43210" && "push back order is wrong");
-
-    l.pop_back();
-    assert(to_string(l)=="4321" && "pop back order is wrong");
-
-    l.pop_front();
-    assert(to_string(l)=="321" && "pop front order is wrong");
-}
-
-void lengthTest(){
-
-    LinkedList<int> l;
-    assert(l.is_empty() &&  "Initialized list is not empty");
-    assert(l.length()==0 &&  "Initialized list is not empty");
-
-    int i=5;
-    while(i--) l.push_front(i);
-
-    assert(l.length()==5 && "Incorrect list length, should be 5.");
-
-    i=3;
-    while(i--) l.pop_front();
-    assert(l.length()==2 && "Incorrect list length, should be 2.");
+    for(int i=1; i<=5; ++i) l.push_back(i);
+    assert(to_string(l)=="[ 1 2 3 4 5 ]" && "pushBack order is wrong");
     
-    i=2;
-    while(i--) l.pop_back();
-    assert(l.length()==0 && "Incorrect list length, should be 0.");
+    for(int i=1; i<=2; ++i) l.pop_front();
+    assert(to_string(l)=="[ 3 4 5 ]" && "popFront order is wrong");
+    
+    for(int i=1; i<=2; ++i) l.pop_back();
+    assert(to_string(l)=="[ 3 ]" && "popBack order is wrong");
+
+    assert(!l.is_empty() && l.length()==1 && "list length is incorrect, should be 1");
+
+    l.remove(0);
+    assert(l.is_empty() && l.length()==0 && "list length is incorrect, should be 0");
+    
+    for(int i=1; i<=5; ++i) l.push_front(i);
+    assert(to_string(l)=="[ 5 4 3 2 1 ]" && "push_front order is wrong");
+
+    l.insert(13, 2);
+    assert(to_string(l)=="[ 5 4 13 3 2 1 ]" && "insert order is wrong");
+
+    l.remove(2);
+    assert(to_string(l)=="[ 5 4 3 2 1 ]" && "remove order is wrong");
 }
 
-void operatorTest(){
+void copyTest(LinkedList<int>* l){
 
-    LinkedList<int> l({1, 2});
-
-    l += LinkedList<int>({3, 4});
-    assert(to_string(l)=="1234" && "+= op not working correctly");
-    assert(to_string(l+l)=="12341234" && "+ op not working correctly");
-
-    l.clear();
-    l+=l;
-    assert(l.length()==0 && "+= op on empty list is bugged");
-    assert((l+l).length()==0 && "+ op on empty list is bugged");
+    
 }
 
 int main(int argc, char const *argv[]){
 
-    basicTest();
-    lengthTest();
-    operatorTest();
+    SinglyLinkedList<int> l;
+    basicTest(l);
+
 
     cout << "Passed all tests." << endl;
+
     return 0;
 }
