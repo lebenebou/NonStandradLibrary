@@ -3,6 +3,7 @@
 #include <vector>
 #include <cassert>
 #include <sstream>
+#include <memory>
 #include "../LinkedLists.cpp"
 using namespace std;
 
@@ -15,7 +16,6 @@ string to_string(LinkedList<int>& l){
 
 void basicTest(LinkedList<int>& l){
 
-    l.clear();
     assert(l.is_empty() && l.length()==0 && "list is not empty on intialization");
 
     for(int i=1; i<=5; ++i) l.push_back(i);
@@ -44,26 +44,40 @@ void basicTest(LinkedList<int>& l){
     l.clear();
 }
 
-template<template<typename> class ConcreteLinkedList>
+template<typename ConcreteLinkedList>
 void copyTest(LinkedList<int>* l){
 
-    ConcreteLinkedList<int>* copied_list = new ConcreteLinkedList<int>(*static_cast<ConcreteLinkedList<int>*>(l));
+    l->clear();
+    for(int i=1; i<=5; ++i) l->push_back(i);
 
-    assert(l->length()==copied_list->length() && "copied list size is not identical");
-    assert(to_string(*l)==to_string(*copied_list) && "copied list content is not identical");
-    // assert(&l[0]!=&l2[0] && "copied list first value address is the same");
+    ConcreteLinkedList listCopy(*static_cast<ConcreteLinkedList*>(l));
 
+    assert(l->length() == listCopy.length() && "list copy does not have same size");
+    assert(to_string(*l)==to_string(listCopy) && "list copy does not have same content");
+
+    for(int i=0; i<l->length(); ++i){
+        assert(&l->operator[](i) != &listCopy[i] && "list copy element has same address");
+    }
+
+    l->pop_front();
+    assert(l->length() < listCopy.length() && "copy size changed when original size changed");
+
+    listCopy = *static_cast<ConcreteLinkedList*>(l);
+
+    assert(l->length() == listCopy.length() && "list copy does not have same size (op=)");
+    assert(to_string(*l)==to_string(listCopy) && "list copy does not have same content (op=)");
     
+    for(int i=0; i<l->length(); ++i){
+        assert(&l->operator[](i) != &listCopy[i] && "list copy element has same address (op=)");
+    }
 }
 
 int main(int argc, char const *argv[]){
 
-    LinkedList<int>* l = new SinglyLinkedList<int>({1, 2, 3});
-    basicTest(*l);
-
-    copyTest<SinglyLinkedList>(l);
-
-    delete l;
+    LinkedList<int>* myList = new SinglyLinkedList<int>();
+    
+    basicTest(*myList);
+    copyTest<SinglyLinkedList<int>>(myList);
 
     cout << "Passed all tests." << endl;
 
