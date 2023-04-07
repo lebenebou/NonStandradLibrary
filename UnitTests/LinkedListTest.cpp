@@ -72,14 +72,38 @@ void copyTest(LinkedList<int>* l){
     }
 }
 
+template<typename ConcreteLinkedList>
+void operatorTest(LinkedList<int>* l){
+
+    ConcreteLinkedList list(*static_cast<ConcreteLinkedList*>(l));
+    list.clear();
+
+    for(int i=1; i<=3; ++i) list.push_back(i);
+
+    list += list;
+    assert(to_string(list)=="[ 1 2 3 1 2 3 ]" && "+=op messes up content");
+    assert(list.length()==6 && "+=op messes up list length");
+
+    for(int i=0; i<3; ++i) list.pop_front(); // 1 2 3
+
+    auto longList = list+list;
+
+    assert(to_string(longList)=="[ 1 2 3 1 2 3 ]" && "+op messes up content");
+    assert(longList.length()==6 && "+op messes up list length");
+
+    assert(to_string(list)=="[ 1 2 3 ]" && "+op messes up original list content");
+    assert(list.length()==3 && "+op messes up original list length");
+}
+
 int main(int argc, char const *argv[]){
 
     LinkedList<int>* myList = new SinglyLinkedList<int>();
     
     basicTest(*myList);
     copyTest<SinglyLinkedList<int>>(myList);
+    operatorTest<SinglyLinkedList<int>>(myList);
 
-    cout << "Passed all tests." << endl;
+    cout << "Passed all singly list tests." << endl;
 
     return 0;
 }
