@@ -96,6 +96,11 @@ public:
         return *this;
     }
 
+    SinglyLinkedList<Type> operator+(const SinglyLinkedList<Type>& other){
+
+        return SinglyLinkedList(*this) += other;
+    }
+
     ostream& to_ostream(ostream& output) const override {
 
         output << "[ ";
