@@ -5,11 +5,7 @@
 using namespace std;
 
 template<typename Type>
-class LinkedList{
-
-protected:
-    template <typename T>
-    friend void swap(LinkedList<T>& l1, LinkedList<T>& l2);
+class LinkedList{    
 
 public:
     virtual ostream& to_ostream(ostream& output) const = 0;
@@ -55,9 +51,12 @@ private:
 
     Node* head;
     size_t size;
+
+    template<typename T>
+    friend void swap(SinglyLinkedList<T>& l1, SinglyLinkedList<T>& l2);
     
 public:
-    SinglyLinkedList(const vector<Type>& v = {}) : LinkedList<Type>(), head(nullptr) {
+    SinglyLinkedList(const vector<Type>& v = {}) : size(0), head(nullptr) {
 
         for(auto it = v.rbegin(); it!=v.rend(); ++it) this->push_front(*it);
     }
@@ -84,6 +83,11 @@ public:
 
         swap(*this, other);
         return *this;
+    }
+
+    SinglyLinkedList& operator+=(SinglyLinkedList<Type> other){
+
+        this->node_at_index(size-1)->next = other.head;
     }
 
     ostream& to_ostream(ostream& output) const override {
