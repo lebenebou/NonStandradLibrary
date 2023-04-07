@@ -4,7 +4,7 @@
 #include <cassert>
 #include <sstream>
 #include <memory>
-#include "../LinkedLists.cpp"
+#include "../LinkedList/SinglyLinkedList.cpp"
 using namespace std;
 
 string to_string(LinkedList<int>& l){
