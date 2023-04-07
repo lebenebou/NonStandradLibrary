@@ -8,14 +8,10 @@ template<typename Type>
 class LinkedList{
 
 protected:
-    size_t size;
-
     template <typename T>
     friend void swap(LinkedList<T>& l1, LinkedList<T>& l2);
 
 public:
-    LinkedList() : size(0) {}
-
     virtual ostream& to_ostream(ostream& output) const = 0;
 
     virtual void push_back(const Type&) = 0;
@@ -26,8 +22,11 @@ public:
     virtual bool insert(const Type& new_value, size_t index) = 0;
     virtual bool remove(size_t index) = 0;
 
+    virtual Type& operator[](const size_t& index) = 0;
+    virtual Type operator[](const size_t& index) const = 0;
+
     virtual bool is_empty() const = 0;
-    virtual size_t length() const final { return size; }
+    virtual size_t length() const = 0;
 
     virtual void clear() = 0;
     virtual ~LinkedList(){}
@@ -47,7 +46,7 @@ private:
 
     Node* node_at_index(size_t index) const {
 
-        if(index >= this->size) return nullptr;
+        assert(index < size && "Index out of bounds");
         
         Node* jumper = head;
         while(index--) jumper = jumper->next;
@@ -55,13 +54,17 @@ private:
     }
 
     Node* head;
+    size_t size;
     
 public:
-    SinglyLinkedList() : LinkedList<Type>(), head(nullptr) {}
+    SinglyLinkedList(const vector<Type>& v = {}) : LinkedList<Type>(), head(nullptr) {
+
+        for(auto it = v.rbegin(); it!=v.rend(); ++it) this->push_front(*it);
+    }
 
     SinglyLinkedList(const SinglyLinkedList<Type>& other) : head(nullptr) {
 
-        this->size = other.size;
+        size = other.size;
         if(other.is_empty()) return;
         
         head = new Node(other.head->value);
@@ -97,28 +100,28 @@ public:
 
         if(is_empty()){
             head = new Node(new_value);
-            ++this->size;
+            ++size;
             return;
         }
         
-        node_at_index(this->size-1)->next = new Node(new_value);
-        ++this->size;
+        node_at_index(size-1)->next = new Node(new_value);
+        ++size;
     }
 
     void push_front(const Type& new_value) override {
 
         head = new Node(new_value, head);
-        ++this->size;
+        ++size;
     }
 
     bool pop_back() override {
 
-        if(this->size < 2) return pop_front();
+        if(size < 2) return pop_front();
 
-        Node* second_last = node_at_index(this->size-2);
+        Node* second_last = node_at_index(size-2);
         delete second_last->next;
         second_last->next = nullptr;
-        --this->size;
+        --size;
 
         return true;
     }
@@ -130,36 +133,36 @@ public:
         Node* trash = head;
         head = head->next;
         delete trash;
-        --this->size;
+        --size;
 
         return true;
     }
 
     bool insert(const Type& new_value, size_t index) override {
 
-        if(index > this->size) return false;
+        if(index > size) return false;
         if(index==0){
             push_front(new_value);
             return true;
         }
-        if(index==this->size){
+        if(index==size){
             push_back(new_value);
             return true;
         }
 
         Node* temp = node_at_index(index-1);
         temp->next = new Node(new_value, temp->next);
-        return ++this->size;
+        return ++size;
     }
 
     bool remove(size_t index) override {
 
-        if(index >= this->size) return false;
+        if(index >= size) return false;
         if(index==0){
             pop_front();
             return true;
         }
-        if(index==this->size-1){
+        if(index==size-1){
             pop_back();
             return true;
         }
@@ -168,8 +171,20 @@ public:
         Node* trash = temp->next;
         temp->next = temp->next->next;
         delete trash;
-        return this->size--;
+        return size--;
     }
+
+    Type& operator[](const size_t& index) override {
+        
+        return node_at_index(index)->value;
+    }
+
+    Type operator[](const size_t& index) const override {
+        
+        return node_at_index(index)->value;
+    }
+
+    size_t length() const override { return size; }
 
     bool is_empty() const override {
         return !head;
