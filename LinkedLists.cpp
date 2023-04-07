@@ -85,9 +85,24 @@ public:
         return *this;
     }
 
-    SinglyLinkedList& operator+=(SinglyLinkedList<Type> other){
+    SinglyLinkedList& operator+=(const SinglyLinkedList<Type>& other){
 
-        this->node_at_index(size-1)->next = other.head;
+        if(this->is_empty()) return *this = other;
+        if(other.is_empty()) return *this;
+
+        Node* tail = node_at_index(size-1);
+        Node* jumper = other.head;
+
+        const size_t target_size = this->size + other.size;
+
+        while(this->size < target_size){
+
+            tail->next = new Node(jumper->value);
+            tail = tail->next;
+            jumper = jumper->next;
+            ++size;
+        }
+        return *this;
     }
 
     ostream& to_ostream(ostream& output) const override {
