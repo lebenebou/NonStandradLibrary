@@ -85,23 +85,14 @@ public:
         return *this;
     }
 
-    SinglyLinkedList& operator+=(const SinglyLinkedList<Type>& other){
+    SinglyLinkedList& operator+=(SinglyLinkedList<Type> other){
 
         if(this->is_empty()) return *this = other;
         if(other.is_empty()) return *this;
 
-        Node* tail = node_at_index(size-1);
-        Node* jumper = other.head;
-
-        const size_t target_size = this->size + other.size;
-
-        while(this->size < target_size){
-
-            tail->next = new Node(jumper->value);
-            tail = tail->next;
-            jumper = jumper->next;
-            ++size;
-        }
+        node_at_index(size-1)->next = other.head;
+        this->size += other.size;
+        other.head = nullptr; // to avoid destruction at the end of this scope
         return *this;
     }
 
