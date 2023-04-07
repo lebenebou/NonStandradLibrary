@@ -40,18 +40,30 @@ void basicTest(LinkedList<int>& l){
 
     l.remove(2);
     assert(to_string(l)=="[ 5 4 3 2 1 ]" && "remove order is wrong");
+
+    l.clear();
 }
 
+template<template<typename> class ConcreteLinkedList>
 void copyTest(LinkedList<int>* l){
+
+    ConcreteLinkedList<int>* copied_list = new ConcreteLinkedList<int>(*static_cast<ConcreteLinkedList<int>*>(l));
+
+    assert(l->length()==copied_list->length() && "copied list size is not identical");
+    assert(to_string(*l)==to_string(*copied_list) && "copied list content is not identical");
+    // assert(&l[0]!=&l2[0] && "copied list first value address is the same");
 
     
 }
 
 int main(int argc, char const *argv[]){
 
-    SinglyLinkedList<int> l;
-    basicTest(l);
+    LinkedList<int>* l = new SinglyLinkedList<int>({1, 2, 3});
+    basicTest(*l);
 
+    copyTest<SinglyLinkedList>(l);
+
+    delete l;
 
     cout << "Passed all tests." << endl;
 
