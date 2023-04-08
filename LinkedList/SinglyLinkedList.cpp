@@ -2,7 +2,11 @@
 #include <iostream>
 #include <vector>
 #include <cassert>
-#include "./AbstractLinkedList.cpp"
+
+#ifndef ABSTRACT_LINKED_LIST_CPP
+#define ABSTRACT_LINKED_LIST_CPP
+#endif
+
 using namespace std;
 
 template<typename Type>
@@ -38,9 +42,8 @@ public:
         for(auto it = v.rbegin(); it!=v.rend(); ++it) this->push_front(*it);
     }
 
-    SinglyLinkedList(const SinglyLinkedList<Type>& other) : head(nullptr) {
+    SinglyLinkedList(const SinglyLinkedList<Type>& other) : head(nullptr), size(other.size) {
 
-        size = other.size;
         if(other.is_empty()) return;
         
         head = new Node(other.head->value);
@@ -90,11 +93,7 @@ public:
 
     void push_back(const Type& new_value) override {
 
-        if(is_empty()){
-            head = new Node(new_value);
-            ++size;
-            return;
-        }
+        if(is_empty()) return push_front(new_value);
         
         node_at_index(size-1)->next = new Node(new_value);
         ++size;
@@ -197,9 +196,4 @@ void swap(SinglyLinkedList<Type>& l1, SinglyLinkedList<Type>& l2){
     using std::swap;
     swap(l1.head, l2.head);
     swap(l1.size, l2.size);
-}
-
-template<typename Type>
-ostream& operator<<(ostream& output, const LinkedList<Type>& l){
-    return l.to_ostream(output);
 }
