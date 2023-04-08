@@ -100,6 +100,23 @@ void operatorTest(LinkedList<int>* l){
     assert(list.length()==3 && "+op messes up original list length");
 }
 
+template<typename ConcreteLinkedList>
+void moveTest(LinkedList<int>* l){
+
+    ConcreteLinkedList list = *static_cast<ConcreteLinkedList*>(l);
+
+    list.clear();
+    for(int i=1; i<=5; ++i) list.push_back(i);
+
+    auto otherList = std::move(list);
+    assert(otherList.length()==5 && list.length()==0 && "wrong size: move constructor didn't move correctly");
+    assert(to_string(otherList)=="[ 1 2 3 4 5 ]" && to_string(list)=="[ ]" && "wrong content: move constructor didn't move correctly");
+
+    otherList = ConcreteLinkedList({1, 2, 3, 4, 5});
+    assert(otherList.length()==5 && list.length()==0 && "wrong size: move assign op didn't move correctly");
+    assert(to_string(otherList)=="[ 1 2 3 4 5 ]" && to_string(list)=="[ ]" && "wrong content: move assign op didn't move correctly");
+}
+
 int main(int argc, char const *argv[]){
 
     // Singly Linked List
@@ -108,6 +125,7 @@ int main(int argc, char const *argv[]){
     basicTest(*myList);
     copyTest<SinglyLinkedList<int>>(myList);
     operatorTest<SinglyLinkedList<int>>(myList);
+    moveTest<SinglyLinkedList<int>>(myList);
 
     cout << "Passed all singly list tests." << endl;
     delete myList; myList = nullptr;
@@ -119,6 +137,7 @@ int main(int argc, char const *argv[]){
     basicTest(*myList);
     copyTest<DoublyLinkedList<int>>(myList);
     operatorTest<DoublyLinkedList<int>>(myList);
+    moveTest<DoublyLinkedList<int>>(myList);
 
     cout << "Passed all doubly list tests." << endl;
     delete myList; myList = nullptr;
