@@ -59,7 +59,13 @@ public:
         }
     }
 
-    SinglyLinkedList& operator=(const SinglyLinkedList<Type>& other){
+    SinglyLinkedList(SinglyLinkedList<Type>&& other) noexcept : head(other.head), size(other.size) {
+
+        other.head = nullptr;
+        other.size = 0;
+    }
+
+    SinglyLinkedList<Type>& operator=(const SinglyLinkedList<Type>& other){
 
         if(this == &other) return *this;
 
@@ -68,7 +74,17 @@ public:
         return *this;
     }
 
-    SinglyLinkedList& operator+=(SinglyLinkedList<Type> other){
+    SinglyLinkedList<Type>& operator=(SinglyLinkedList<Type>&& other) noexcept {
+
+        if(this == &other) return *this;
+
+        swap(*this, other);
+        other.clear();
+
+        return *this;
+    }
+
+    SinglyLinkedList<Type>& operator+=(SinglyLinkedList<Type> other){
 
         if(this->is_empty()) return *this = other;
         if(other.is_empty()) return *this;
@@ -80,7 +96,6 @@ public:
     }
 
     SinglyLinkedList<Type> operator+(const SinglyLinkedList<Type>& other){
-
         return SinglyLinkedList(*this) += other;
     }
 
