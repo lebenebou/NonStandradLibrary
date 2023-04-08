@@ -25,3 +25,8 @@ public:
     virtual void clear() = 0;
     virtual ~LinkedList(){}
 };
+
+template<typename Type>
+ostream& operator<<(ostream& output, const LinkedList<Type>& l){
+    return l.to_ostream(output);
+}
