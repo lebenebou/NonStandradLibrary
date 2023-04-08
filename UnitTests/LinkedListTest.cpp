@@ -4,9 +4,12 @@
 #include <cassert>
 #include <sstream>
 #include <memory>
+
 #include "../LinkedList/AbstractLinkedList.cpp"
 #include "../LinkedList/SinglyLinkedList.cpp"
 #include "../LinkedList/DoublyLinkedList.cpp"
+#include "../LinkedList/UniqueLinkedList.cpp"
+
 using namespace std;
 
 string to_string(LinkedList<int>& l){
@@ -108,18 +111,18 @@ void moveTest(LinkedList<int>* l){
     list.clear();
     for(int i=1; i<=5; ++i) list.push_back(i);
 
-    auto otherList = std::move(list);
+    auto otherList = std::move(list); // this actually uses the constructor(&&) and not op=(&&)
     assert(otherList.length()==5 && list.length()==0 && "wrong size: move constructor didn't move correctly");
     assert(to_string(otherList)=="[ 1 2 3 4 5 ]" && to_string(list)=="[ ]" && "wrong content: move constructor didn't move correctly");
 
-    otherList = ConcreteLinkedList({1, 2, 3, 4, 5});
+    otherList = std::move(ConcreteLinkedList({1, 2, 3, 4, 5}));
     assert(otherList.length()==5 && list.length()==0 && "wrong size: move assign op didn't move correctly");
     assert(to_string(otherList)=="[ 1 2 3 4 5 ]" && to_string(list)=="[ ]" && "wrong content: move assign op didn't move correctly");
 }
 
 int main(int argc, char const *argv[]){
 
-    // Singly Linked List
+    // Singly Linked List ===========================
     LinkedList<int>* myList = new SinglyLinkedList<int>();
     
     basicTest(*myList);
@@ -131,7 +134,7 @@ int main(int argc, char const *argv[]){
     delete myList; myList = nullptr;
 
 
-    // Doubly Linked List
+    // Doubly Linked List ===========================
     myList = new DoublyLinkedList<int>();
     
     basicTest(*myList);
@@ -142,6 +145,17 @@ int main(int argc, char const *argv[]){
     cout << "Passed all doubly list tests." << endl;
     delete myList; myList = nullptr;
     
+    
+    // Unique Linked List ===========================
+    myList = new UniqueLinkedList<int>();
+    
+    basicTest(*myList);
+    copyTest<UniqueLinkedList<int>>(myList);
+    operatorTest<UniqueLinkedList<int>>(myList);
+    moveTest<UniqueLinkedList<int>>(myList);
+
+    cout << "Passed all unique list tests." << endl;
+    delete myList;
 
     return 0;
 }
