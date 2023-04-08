@@ -58,7 +58,7 @@ void copyTest(LinkedList<int>* l){
     assert(to_string(*l)==to_string(listCopy) && "list copy does not have same content");
 
     for(int i=0; i<l->length(); ++i){
-        assert(&l->operator[](i) != &listCopy[i] && "list copy element has same address");
+        assert(&l->operator[](i) != &listCopy[i] && "copied list element has same address");
     }
 
     l->pop_front();
@@ -70,8 +70,11 @@ void copyTest(LinkedList<int>* l){
     assert(to_string(*l)==to_string(listCopy) && "list copy does not have same content (op=)");
     
     for(int i=0; i<l->length(); ++i){
-        assert(&l->operator[](i) != &listCopy[i] && "list copy element has same address (op=)");
+        assert(&l->operator[](i) != &listCopy[i] && "copied list element has same address (op=)");
     }
+
+    listCopy = listCopy;
+    assert(to_string(listCopy)=="[ 2 3 4 5 ]" && listCopy.length()==4 && "error on self assignment");
 }
 
 template<typename ConcreteLinkedList>
