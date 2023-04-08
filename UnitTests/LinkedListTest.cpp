@@ -4,7 +4,9 @@
 #include <cassert>
 #include <sstream>
 #include <memory>
+#include "../LinkedList/AbstractLinkedList.cpp"
 #include "../LinkedList/SinglyLinkedList.cpp"
+#include "../LinkedList/DoublyLinkedList.cpp"
 using namespace std;
 
 string to_string(LinkedList<int>& l){
@@ -86,7 +88,7 @@ void operatorTest(LinkedList<int>* l){
 
     for(int i=0; i<3; ++i) list.pop_front(); // 1 2 3
 
-    auto longList = list+list;
+    ConcreteLinkedList longList = list+list;
 
     assert(to_string(longList)=="[ 1 2 3 1 2 3 ]" && "+op messes up content");
     assert(longList.length()==6 && "+op messes up list length");
@@ -97,6 +99,7 @@ void operatorTest(LinkedList<int>* l){
 
 int main(int argc, char const *argv[]){
 
+    // Singly Linked List
     LinkedList<int>* myList = new SinglyLinkedList<int>();
     
     basicTest(*myList);
@@ -104,6 +107,19 @@ int main(int argc, char const *argv[]){
     operatorTest<SinglyLinkedList<int>>(myList);
 
     cout << "Passed all singly list tests." << endl;
+    delete myList; myList = nullptr;
+
+
+    // Doubly Linked List
+    myList = new DoublyLinkedList<int>();
+    
+    basicTest(*myList);
+    copyTest<DoublyLinkedList<int>>(myList);
+    operatorTest<DoublyLinkedList<int>>(myList);
+
+    cout << "Passed all doubly list tests." << endl;
+    delete myList; myList = nullptr;
+    
 
     return 0;
 }
