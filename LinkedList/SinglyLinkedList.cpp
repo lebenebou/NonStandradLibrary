@@ -59,9 +59,12 @@ public:
         }
     }
 
-    SinglyLinkedList& operator=(SinglyLinkedList<Type> other){
+    SinglyLinkedList& operator=(const SinglyLinkedList<Type>& other){
 
-        swap(*this, other);
+        if(this == &other) return *this;
+
+        SinglyLinkedList<Type> temp(other);
+        swap(*this, temp);
         return *this;
     }
 
