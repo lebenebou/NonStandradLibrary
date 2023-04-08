@@ -79,12 +79,29 @@ public:
         tail = j1;
     }
 
-    DoublyLinkedList<Type>& operator=(DoublyLinkedList<Type> other){
+    DoublyLinkedList(DoublyLinkedList<Type>&& other) : head(other.head), tail(other.tail), size(other.size) {
+
+        other.head = nullptr;
+        other.tail = nullptr;
+        other.size = 0;
+    }
+
+    DoublyLinkedList<Type>& operator=(const DoublyLinkedList<Type>& other){
 
         if(this == &other) return *this;
 
         DoublyLinkedList<Type> temp(other);
         swap(*this, temp);
+        return *this;
+    }
+
+    DoublyLinkedList<Type>& operator=(DoublyLinkedList<Type>&& other){
+
+        if(this == &other) return *this;
+
+        swap(*this, other);
+        other.clear();
+
         return *this;
     }
 
