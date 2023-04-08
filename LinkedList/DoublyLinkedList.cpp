@@ -81,7 +81,10 @@ public:
 
     DoublyLinkedList<Type>& operator=(DoublyLinkedList<Type> other){
 
-        swap(*this, other);
+        if(this == &other) return *this;
+
+        DoublyLinkedList<Type> temp(other);
+        swap(*this, temp);
         return *this;
     }
 
