@@ -110,13 +110,30 @@ public:
     BST(const BST<Type>& other) : BST() {
         other.bfs(other.root, [this](Node* n) -> void { this->insert(n->value); });
     }
-    
+
+    BST(BST<Type>&& other){
+
+        root = std::exchange(other.root, nullptr);
+        count = std::exchange(other.count, 0);
+    }
+
     BST<Type>& operator=(const BST<Type>& other){
 
         if(this == &other) return *this;
 
         BST<Type> treeCopy = BST(other);
         swap(*this, treeCopy);
+        return *this;
+    }
+
+    BST<Type>& operator=(BST<Type>&& other){
+
+        if(this == &other) return *this;
+
+        this->clear();
+        root = std::exchange(other.root, nullptr);
+        count = std::exchange(other.count, 0);
+
         return *this;
     }
 
@@ -128,7 +145,7 @@ public:
         return output;
     }
 
-    void display(short type = 1){
+    void display(short type = 1) const {
 
         const auto toCout = [](Node* n) -> void { cout << n->value << " "; };
 
@@ -158,13 +175,17 @@ public:
 
     bool insert(const Type& new_value){ return insert(new_value, root); }
 
-    bool find(const Type& elt){ return find(elt, root); }
+    bool find(const Type& elt) const { return find(elt, root); }
 
     bool isEmpty() const { return !root; }
 
-    ~BST(){
+    void clear(){
+
         postOrder(root, [](Node* n) -> void{ delete n; });
+        count = 0;
     }
+
+    ~BST(){ clear(); }
 };
 
 template<typename Type>
@@ -176,13 +197,4 @@ void swap(BST<Type>& tree1, BST<Type>& tree2){
     using std::swap;
     swap(tree1.root, tree2.root);
     swap(tree1.count, tree2.count);
-}
-
-int main(int argc, char const *argv[]){
-
-    BST<int> myTree({2, 1, 3});
-
-    cout << myTree << endl;
-    
-    return 0;
 }
