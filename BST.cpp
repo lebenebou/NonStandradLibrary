@@ -16,7 +16,7 @@ private:
         Node* right;
         Node* left;
 
-        Node(const Type& v, Node* r =nullptr, Node* l =nullptr)
+        Node(const Type& v, Node* r = nullptr, Node* l = nullptr)
         : value(v), right(r), left(l) {}
     };
 
@@ -51,9 +51,10 @@ private:
         return find(elt, start->left);
     }
 
+    // Traversals using a processor
     typedef function<void(Node*)> processor;
 
-    void bfs(Node* start, const processor& process){
+    void bfs(Node* start, const processor& process) const {
 
         if(!start) return;
 
@@ -66,8 +67,8 @@ private:
             q.pop();
 
             process(current);
-            if(current->right) q.push(current->right);
             if(current->left) q.push(current->left);
+            if(current->right) q.push(current->right);
         }
     }
 
@@ -99,14 +100,10 @@ private:
     }
 
 public:
-    BST() : root(nullptr), count(0) {}
-
-    bool insert(const Type& new_value){ return insert(new_value, root); }
-
-    bool find(const Type& elt){ return find(elt, root); }
-
-    bool isEmpty() const { return !root; }
-
+    BST(const vector<Type>& v = {}) : root(nullptr), count(0) {
+        for(const auto& elt : v) this->insert(elt);
+    }
+    
     void display(short type = 1){
 
         const auto toCout = [](Node* n) -> void { cout << n->value << " "; };
@@ -134,13 +131,22 @@ public:
 
         cout << "] of size " << count << endl;
     }
+
+    bool insert(const Type& new_value){ return insert(new_value, root); }
+
+    bool find(const Type& elt){ return find(elt, root); }
+
+    bool isEmpty() const { return !root; }
+
+    ~BST(){
+        postOrder(root, [](Node* n) -> void{ delete n; });
+    }
 };
 
-int main(int argc, char const *argv[])
-{
-    BST<int> myTree;
+int main(int argc, char const *argv[]){
 
-    myTree.insert(1);
+    BST<int> myTree({2, 1, 3});
+
     myTree.display(4);
     
     return 0;
