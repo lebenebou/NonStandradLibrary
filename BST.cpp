@@ -71,30 +71,30 @@ private:
         }
     }
 
-    void preOrder(Node* start, const processor& process){
+    void preOrder(Node* start, const processor& process) const {
 
         if(!start) return;
 
         process(start);
-        preOrder(start->left);
-        preOrder(start->right);
+        preOrder(start->left, process);
+        preOrder(start->right, process);
     }
 
-    void inOrder(Node* start, const processor& process){
+    void inOrder(Node* start, const processor& process) const {
 
         if(!start) return;
 
-        inOrder(start->left);
+        inOrder(start->left, process);
         process(start);
-        inOrder(start->right);
+        inOrder(start->right, process);
     }
 
-    void postOrder(Node* start, const processor& process){
+    void postOrder(Node* start, const processor& process) const {
 
         if(!start) return;
 
-        postOrder(start->left);
-        postOrder(start->right);
+        postOrder(start->left, process);
+        postOrder(start->right, process);
         process(start);
     }
 
@@ -106,6 +106,34 @@ public:
     bool find(const Type& elt){ return find(elt, root); }
 
     bool isEmpty() const { return !root; }
+
+    void display(short type = 1){
+
+        const auto toCout = [](Node* n) -> void { cout << n->value << " "; };
+
+        cout << "[ ";
+
+        switch (type){
+        
+            case 1:
+                preOrder(root, toCout);
+                break;
+                
+            case 2:
+                inOrder(root, toCout);
+                break;
+            
+            case 3:
+                postOrder(root, toCout);
+                break;
+            
+            default:
+                bfs(root, toCout);
+                break;
+        }
+
+        cout << "] of size " << count << endl;
+    }
 };
 
 int main(int argc, char const *argv[])
@@ -113,8 +141,7 @@ int main(int argc, char const *argv[])
     BST<int> myTree;
 
     myTree.insert(1);
-    cout << myTree.find(0) << endl;
-    cout << myTree.find(1) << endl;
+    myTree.display(4);
     
     return 0;
 }
