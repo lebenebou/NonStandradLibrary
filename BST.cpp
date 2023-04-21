@@ -99,11 +99,35 @@ private:
         process(start);
     }
 
+    template<typename T>
+    friend void swap(BST<T>&, BST<T>&);
+
 public:
     BST(const vector<Type>& v = {}) : root(nullptr), count(0) {
         for(const auto& elt : v) this->insert(elt);
     }
     
+    BST(const BST<Type>& other) : BST() {
+        other.bfs(other.root, [this](Node* n) -> void { this->insert(n->value); });
+    }
+    
+    BST<Type>& operator=(const BST<Type>& other){
+
+        if(this == &other) return *this;
+
+        BST<Type> treeCopy = BST(other);
+        swap(*this, treeCopy);
+        return *this;
+    }
+
+    ostream& toOstream(ostream& output) const {
+        
+        output << "[ ";
+        inOrder(root, [&output](Node* n) -> void{ output << n->value << " "; });
+        output << ']';
+        return output;
+    }
+
     void display(short type = 1){
 
         const auto toCout = [](Node* n) -> void { cout << n->value << " "; };
@@ -113,11 +137,11 @@ public:
         switch (type){
         
             case 1:
-                preOrder(root, toCout);
+                inOrder(root, toCout);
                 break;
                 
             case 2:
-                inOrder(root, toCout);
+                preOrder(root, toCout);
                 break;
             
             case 3:
@@ -143,11 +167,22 @@ public:
     }
 };
 
+template<typename Type>
+ostream& operator<<(ostream& output, const BST<Type>& tree){ return tree.toOstream(output); }
+
+template<typename Type>
+void swap(BST<Type>& tree1, BST<Type>& tree2){
+
+    using std::swap;
+    swap(tree1.root, tree2.root);
+    swap(tree1.count, tree2.count);
+}
+
 int main(int argc, char const *argv[]){
 
     BST<int> myTree({2, 1, 3});
 
-    myTree.display(4);
+    cout << myTree << endl;
     
     return 0;
 }
