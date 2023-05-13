@@ -2,7 +2,7 @@
 
 A re-implementation of the most prevalent data structures in the C++ library.
 
-## Overviews
+## Overview
 
 NonStandardLibrary is a C++ library that provides re-implementations of commonly used data structures, such as vectors, linked lists, stacks, queues, and more. This repository started as a challenge, with an emphasis on readability, ease of use, and extensibility.
 It improved my understanding of datastructures and algorithms by a long shot.
