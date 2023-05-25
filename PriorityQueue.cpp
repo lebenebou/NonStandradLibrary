@@ -86,17 +86,8 @@ public:
     int size() const {
         return this->heap.size();
     }
-};
-
-int main(int argc, char const *argv[])
-{   
-    PriorityQueue<string> q({"c", "a", "b"});
-
-    while(!q.is_empty()){
-
-        cout << q.top() << endl;
-        q.pop();
+    
+    void clear(){
+        heap.clear();
     }
-
-    return 0;
-}
+};
