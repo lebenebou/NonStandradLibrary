@@ -1,12 +1,14 @@
 
 #include <iostream>
 #include <cassert>
+#include "../Queue/AbstractQueue.cpp"
+#include "../Queue/ArrayQueue.cpp"
+#include "../Queue/LinkedQueue.cpp"
 using namespace std;
-#include "../Queue.cpp"
 
 void lengthTest(const bool& isArrayQueue){
 
-    Queue<int>* q = nullptr;
+    AbstractQueue<int>* q = nullptr;
     if(isArrayQueue) q = new ArrayQueue<int>(10);
     else q = new LinkedQueue<int>();
 
@@ -22,7 +24,7 @@ void lengthTest(const bool& isArrayQueue){
 
 void pushTest(const bool& isArrayQueue){
 
-    Queue<int>* q = nullptr;
+    AbstractQueue<int>* q = nullptr;
     if(isArrayQueue) q = new ArrayQueue<int>(10);
     else q = new LinkedQueue<int>();
     
@@ -45,11 +47,15 @@ void pushTest(const bool& isArrayQueue){
 
 void pushPopTest(const bool& isArrayQueue){
 
-    Queue<int>* q = nullptr;
+    AbstractQueue<int>* q = nullptr;
     if(isArrayQueue) q = new ArrayQueue<int>(10);
     else q = new LinkedQueue<int>();
 
-    // to be continued
+    for(int i=0; i<10; ++i) q->push(i);
+    for(int i=0; i<10; ++i) q->pop();
+    assert(q->is_empty() && "queue is not empty after pushing and popping 10 elements");
+    
+    // to be continued...
 }
 
 int main(int argc, char const *argv[]){
