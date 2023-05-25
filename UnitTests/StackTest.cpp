@@ -1,7 +1,9 @@
 
 #include <iostream>
 #include <cassert>
-#include "../Stack.cpp"
+#include "../Stack/AbstractStack.cpp"
+#include "../Stack/ArrayStack.cpp"
+#include "../Stack/LinkedStack.cpp"
 using namespace std;
 
 void basicTest(Stack<int>& s){
