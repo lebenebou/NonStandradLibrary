@@ -62,18 +62,3 @@ public:
         return parent;
     }
 };
-
-int main(){
-
-    UnionFind uf(4);
-
-    uf.join(0, 1);
-    uf.join(2, 0);
-    uf.join(0, 3);
-
-    uf.display();
-    cout << uf.connected_comps() << endl;
-
-
-    return 0;
-}
