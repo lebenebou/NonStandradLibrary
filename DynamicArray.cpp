@@ -82,6 +82,10 @@ public:
         return count==0;
     }
 
+    void clear(){
+        count = 0;
+    }
+
     ~DynamicArray(){
         delete[] p;
     }
