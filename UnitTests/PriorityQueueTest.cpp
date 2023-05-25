@@ -28,7 +28,7 @@ int main(int argc, char const *argv[])
     PriorityQueue<int> q;
     basicTest(q);
 
-    cout << "All tests passed." << endl;
+    std::cout << "All tests passed." << endl;
 
     return 0;
 }
