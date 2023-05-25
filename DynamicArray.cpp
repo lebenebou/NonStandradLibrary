@@ -70,6 +70,14 @@ public:
         return true;
     }
 
+    Type& operator[](const size_t& index){
+        return p[index];
+    }
+
+    Type operator[](const size_t& index) const {
+        return p[index];
+    }
+
     size_t capacity() const {
         return cap;
     }
