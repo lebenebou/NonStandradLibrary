@@ -98,18 +98,3 @@ public:
         delete[] p;
     }
 };
-
-int main(int argc, char* argv[]){
-
-    DynamicArray<int> v;
-
-    int i = 10;
-    while(--i + 1) v.push_back(10-i);
-
-    v.display(); cout << endl;
-
-    while(v.pop_front()) v.display(); cout << endl;
-    
-    
-    return 0;
-}
