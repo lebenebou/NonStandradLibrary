@@ -54,8 +54,13 @@ public:
 
     void display() const {
         
-        for(const int& elt : parent) cout << elt << " ";
-        cout << endl;
+        // display vector with brackets
+        cout << "[";
+        for(size_t i=0; i<parent.size(); ++i){
+            cout << parent[i];
+            if(i != parent.size()-1) cout << ", ";
+        }
+        cout << "]" << endl;
     }
 
     vector<int> content() const {
