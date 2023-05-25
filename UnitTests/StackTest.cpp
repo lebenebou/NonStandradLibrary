@@ -28,6 +28,9 @@ int main(int argc, char const *argv[])
 {
     LinkedStack<int> s;
     basicTest(s);
+    
+    ArrayStack<int> as;
+    basicTest(as);
 
     std::cout << "All tests passed." << endl;
 }
