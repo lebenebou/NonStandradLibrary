@@ -130,28 +130,3 @@ public:
         return v.size()==0;
     }
 };
-
-int main(int argc, char* argv[]){
-
-    Stack<int>* s = new LinkedStack<int>({1, 2, 3, 4});
-    cout << "Linked Stack: ";
-
-    while(!s->is_empty()){
-
-        cout << s->top() << " ";
-        s->pop();
-    }
-
-    delete s; cout << endl;
-
-    s = new ArrayStack<int>({5, 6, 7, 8});
-    cout << "Array Stack: ";
-
-    while(!s->is_empty()){
-
-        cout << s->top() << " ";
-        s->pop();
-    }
-
-    return 0;
-}
