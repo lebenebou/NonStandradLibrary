@@ -15,6 +15,7 @@ public: // interface for a stack
 
     virtual bool is_empty() const = 0;
     virtual size_t size() const = 0;
+    virtual void clear() = 0;
 
     virtual ~Stack(){}
 };
@@ -77,6 +78,10 @@ public:
         return !last;
     }
     
+    void clear() override {
+        while(count) pop();
+    }
+
     ~LinkedStack(){
         while(count) pop();
     }
@@ -127,6 +132,12 @@ public:
     }
 
     bool is_empty() const override {
+    
+    
         return v.size()==0;
+    }
+
+    void clear() override {
+        v.clear();
     }
 };
