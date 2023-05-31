@@ -2,7 +2,7 @@
 
 ![screenshot](./screenshot.png)
 
-A re-implementation of the most prevalent data structures in the C++ library.
+# A C++ re-implementation of the standard library
 
 ## Overview
 
